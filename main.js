@@ -10,6 +10,7 @@ const roundsSelectContainer = document.getElementById('roundsSelectContainer');
 const selectionTypeSelectContainer = document.getElementById('selectionTypeSelectContainer');
 const artistSelection = document.getElementById('artistSelection');
 const playlistSelection = document.getElementById('playlistSelection');
+const answerModeSelect = document.getElementById('answerMode')
 
 
 // Variables globales para el modo lírico
