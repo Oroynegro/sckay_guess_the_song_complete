@@ -682,10 +682,7 @@ function setupAnswerMode() {
             overlay.style.backgroundColor = "#282828";
             overlay.style.borderRadius = "0";
         }
-        const songInfo = document.querySelector(".song-info");
-        if (songInfo) {
-            songInfo.style.marginTop = "90px";
-        }
+
     } else {
         guessContainer.innerHTML = `
             <input type="text" id="guessInput" placeholder="Escribe el nombre de la canción..." disabled />
@@ -1702,7 +1699,6 @@ function startTimer() {
 
 function resetGameUI() {
     document.getElementById("playInstruction").style.display = "flex";
-    document.getElementById("songInfo").innerHTML = "";
 }
 
 function resetGame() {
