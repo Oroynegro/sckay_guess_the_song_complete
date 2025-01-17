@@ -546,7 +546,7 @@ function ocultarLevel() {
         choiceOption.style.display = 'block';
         randomOption.style.display = 'none';
         manualOption.style.display = 'none';
-        answerModeSelect.value = 'artist';
+        answerModeSelect.value = 'text';
         
         const levelSelect = document.querySelector(".level-select");
         if (levelSelect) {
@@ -583,7 +583,7 @@ function ocultarLevel() {
         choiceOption.style.display = 'block';
         randomOption.style.display = 'none';
         manualOption.style.display = 'none';
-        answerModeSelect.value = 'artist';
+        answerModeSelect.value = 'text';
 
         // Si es adivina la "song"
         const levelSelect = document.querySelector(".level-select");
