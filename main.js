@@ -12,203 +12,264 @@ const artistSelection = document.getElementById('artistSelection');
 const playlistSelection = document.getElementById('playlistSelection');
 
 
-//guess the lyric
+// Variables globales para el modo lírico
+let currentWord = '';
+let palabras = { espanol: [], ingles: [] };
+
+// Elementos del DOM para el modo lírico
 const wordDisplay = document.getElementById('wordDisplay');
 const lyricsInput = document.getElementById('lyricsInput');
 const checkButtonLyric = document.getElementById('checkButtonLyric');
 const loading = document.getElementById('loading');
-const languageSelect = document.getElementById('languageSelect'); // Elemento de selección de idioma
-const manualWordInput = document.getElementById('manualWordInput'); // Campo de entrada de palabra manual
-const manualWordInputField = document.getElementById('manualWord'); // Campo de texto para palabra manual
+const languageSelect = document.getElementById('languageSelect');
+const manualWordInput = document.getElementById('manualWordInput');
+const manualWordInputField = document.getElementById('manualWord');
 const languageSelectContainer = document.getElementById('languageSelectContainer');
 const minWordsContainer = document.getElementById('minWordsContainer');
 const minWords = document.getElementById('minWords');
-const answerModeSelectValue= document.getElementById("answerMode").value;
-const answerModeSelect= document.getElementById("answerMode");
-const textOption = document.getElementById('textOption');
-const choiceOption = document.getElementById('choiceOption');
-const randomOption = document.getElementById('randomOption');
-const manualOption = document.getElementById('manualOption');
-const startButton = document.getElementById('startButton');
 const resultLyric = document.getElementById('resultLyric');
-const gameArea = document.getElementById('gameArea')
-const gameInfo = document.getElementById('gameInfo')
-const gameAreaSongArtist = document.getElementById('gameAreaSongArtist')
+const gameArea = document.getElementById('gameArea');
+const gameInfo = document.getElementById('gameInfo');
+const gameAreaSongArtist = document.getElementById('gameAreaSongArtist');
 const gameAreaLyric = document.getElementById('gameAreaLyric');
 const gameConfigContainer = document.getElementById('gameConfig');
-const playInstruction = document.getElementById('playInstruction')
-
-// Primero, modificar el gameConfig existente
-let gameConfig = {
-    mode: "single",
-    rounds: 5,
-    category: "song",
-    currentRound: 1,
-    usedTracks: new Set(),
-    answerMode: "text", // Nuevo campo para el modo de respuesta
-    options: [], // Almacenará las opciones para el modo múltiple
-    players: {
-        player1: { name: "Jugador 1", score: 0, correctAnswers: 0 },
-        player2: { name: "Jugador 2", score: 0, correctAnswers: 0 },
-    },
-    currentPlayer: "player1",
-};
-const fullscreenBtn = document.getElementById("fullscreenBtn");
-const gameContainer = document.getElementById("gameContainer");
-
-fullscreenBtn.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-        // Entrar en pantalla completa
-        if (gameContainer.requestFullscreen) {
-            gameContainer.requestFullscreen();
-        } else if (gameContainer.mozRequestFullScreen) {
-            // Firefox
-            gameContainer.mozRequestFullScreen();
-        } else if (gameContainer.webkitRequestFullscreen) {
-            // Chrome, Safari, Opera
-            gameContainer.webkitRequestFullscreen();
-        } else if (gameContainer.msRequestFullscreen) {
-            // Edge/IE
-            gameContainer.msRequestFullscreen();
-        }
-    } else {
-        // Salir de pantalla completa
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-            // Firefox
-            document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) {
-            // Chrome, Safari, Opera
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-            // Edge/IE
-            document.msExitFullscreen();
-        }
-    }
-});
-
-// Función auxiliar para limpiar strings
-function cleanString(str) {
-    if (!str) return "";
-    // Elimina escape characters y normaliza apóstrofes
-    return str.replace(/\\'/g, "'").replace(/\\/g, "").trim();
-}
-
-let currentWord = '';
-let palabras = { espanol: [], ingles: [] };  // Inicializamos un objeto para las palabras en ambos idiomas
+const playInstruction = document.getElementById('playInstruction');
+const startButton = document.getElementById('startButton');
 
 // Cargar las palabras desde el archivo JSON
 async function loadWords() {
     try {
-        const response = await fetch('words.json'); // Ruta al archivo JSON
-        const data = await response.json();         // Convertir el archivo JSON en un objeto JavaScript
-        palabras = data;                            // Asignar las palabras a la variable
+        const response = await fetch('words.json');
+        const data = await response.json();
+        palabras = data;
     } catch (error) {
         console.error('Error al cargar las palabras:', error);
     }
 }
-// Llamar a loadWords cuando la página se haya cargado
-window.onload = loadWords;
 
+// Cargar palabras cuando la página se carga
+window.addEventListener('load', loadWords);
 
-checkButtonLyric.addEventListener('click', checkLyrics);
-
+// Función para generar palabra aleatoria
 function generateRandomWord() {
-    
-    const selectedLanguage = languageSelect.value;  // Obtener el idioma seleccionado
+    const selectedLanguage = languageSelect.value;
     
     if (palabras[selectedLanguage].length === 0) {
         wordDisplay.textContent = 'Cargando palabras...';
         return;
     }
 
-    // Seleccionar una palabra aleatoria del array correspondiente
     currentWord = palabras[selectedLanguage][Math.floor(Math.random() * palabras[selectedLanguage].length)];
-    wordDisplay.textContent = `${currentWord.toUpperCase()}`;
-    lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`
-    lyricsInput.style.display = 'block';
-    checkButtonLyric.style.display = 'block';
-    startButton.style.display = 'none';
-    resultLyric.style.display = 'none';
-    lyricsInput.value = '';
-    gameConfigContainer.style.display = 'none'
-    gameArea.style.display='block'
-    gameInfo.style.display='none'
-    gameAreaSongArtist.style.display = 'none'
-    playInstruction.style.display= 'none'
-    gameAreaLyric.style.display = 'flex'
-
+    setupLyricGameUI();
 }
 
+// Función para configurar palabra manual
 function setManualWord() {
     const manualWord = manualWordInputField.value.trim();
     if (manualWord) {
         currentWord = manualWord;
-        wordDisplay.textContent = `${currentWord.toUpperCase()}`;
-        lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
-        lyricsInput.style.display = 'block';
-        checkButtonLyric.style.display = 'block';
-        gameConfigContainer.style.display = 'none';
-        gameArea.style.display='block'
-        gameInfo.style.display='none'
-        gameAreaSongArtist.style.display = 'none'
-        playInstruction.style.display= 'none'
-        gameAreaLyric.style.display = 'flex'
-        
+        setupLyricGameUI();
     }
 }
 
-// Instead, create a function to update the button's event listener
-// Función para actualizar el listener del botón
+// Configurar la UI del juego de lírica
+function setupLyricGameUI() {
+    wordDisplay.textContent = currentWord.toUpperCase();
+    lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
+    
+    // Mostrar elementos necesarios
+    lyricsInput.style.display = 'block';
+    checkButtonLyric.style.display = 'block';
+    gameArea.style.display = 'block';
+    gameAreaLyric.style.display = 'flex';
+    
+    // Ocultar elementos innecesarios
+    startButton.style.display = 'none';
+    resultLyric.style.display = 'none';
+    gameConfigContainer.style.display = 'none';
+    gameInfo.style.display = 'none';
+    gameAreaSongArtist.style.display = 'none';
+    playInstruction.style.display = 'none';
+    
+    // Limpiar input
+    lyricsInput.value = '';
+}
+
+// Función para verificar las letras
+async function checkLyrics() {
+    const normalizeText = (text) => {
+        return text.toLowerCase()
+            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+    };
+
+    const lyrics = normalizeText(lyricsInput.value.trim());
+    
+    // Validar longitud mínima
+    if (lyrics.split(' ').length < minWords.value) {
+        showResultLyric(`Ingresa al menos ${minWords.value} palabras consecutivas`, false);
+        return;
+    }
+
+    // Validar presencia de la palabra
+    const wordRegex = new RegExp(`\\b${currentWord}\\b`, 'i');
+    if (!wordRegex.test(lyrics)) {
+        showResultLyric(`La palabra "${currentWord}" no está presente en tu texto`, false);
+        return;
+    }
+
+    // Mostrar loading y deshabilitar botón
+    loading.style.display = 'block';
+    checkButtonLyric.disabled = true;
+
+    try {
+        const response = await fetch('https://guessthelyric.vercel.app/api/check-lyrics', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ lyrics }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.exists && data.verified) {
+            showResultLyric('¡Correcto! Letra verificada.', true, data);
+        } else if (data.exists && !data.verified) {
+            showResultLyric(
+                `<p id="posible">Se encontró una posible coincidencia, pero no se pudo verificar la letra exacta.</p>`,
+                false,
+                data
+            );
+        } else {
+            showResultLyric('No se encontró una canción con esa letra exacta.', false);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showResultLyric('Error al verificar la letra. Por favor, intenta nuevamente en unos momentos.', false);
+    } finally {
+        loading.style.display = 'none';
+        checkButtonLyric.disabled = false;
+    }
+}
+
+// Función para mostrar el resultado
+function showResultLyric(message, isSuccess, data) {
+    resultLyric.innerHTML = '';
+
+    if (isSuccess) {
+        let formattedStanza = data.stanza
+            .replace(/\n/g, '<br>')
+            .replace(/(<br>\s*){3,}/g, '<br><br>');
+
+        if (!formattedStanza.includes('<br>')) {
+            const words = formattedStanza.split(/\s+/);
+            if (words.length > 40) {
+                formattedStanza = words.slice(0, 40).join(' ') + '...';
+            }
+        }
+
+        resultLyric.innerHTML = `
+            <h3 class="lyricVerification">¡Correcto! Letra verificada</h3>
+            <span class="titleSong">${data.title}</span>
+            <span class="artistSong">${data.artist}</span>
+            <div class="stanzaSong">${formattedStanza}</div>
+        `;
+    } else if (data && data.exists) {
+        resultLyric.innerHTML = `
+            <span class="titleSong">${data.title}</span>
+            <span class="artistSong">${data.artist}</span>
+            <p>${message}</p>
+        `;
+    } else {
+        resultLyric.innerHTML = `<p>${message}</p>`;
+    }
+
+    resultLyric.style.display = 'flex';
+}
+
+// Función para inicializar el modo lírico
+function initializeLyricMode() {
+    // Actualizar la configuración del juego
+    gameConfig.mode = "single";
+    gameConfig.category = "lyric";
+    gameConfig.answerMode = document.getElementById("answerMode").value;
+    
+    // Configurar la UI según el modo de respuesta
+    if (gameConfig.answerMode === "random") {
+        manualWordInput.style.display = 'none';
+        languageSelectContainer.style.display = 'flex';
+    } else if (gameConfig.answerMode === "manual") {
+        manualWordInput.style.display = 'flex';
+        languageSelectContainer.style.display = 'none';
+        lyricsInput.style.display = 'none';
+        checkButtonLyric.style.display = 'none';
+        wordDisplay.textContent = 'Escribe una palabra';
+    }
+}
+
+// Event Listeners
+checkButtonLyric.addEventListener('click', checkLyrics);
+
+// Actualizar la función de cambio de categoría
+document.getElementById("gameCategory").addEventListener("change", function(e) {
+    if (e.target.value === "lyric") {
+        // Mostrar/ocultar opciones de respuesta
+        document.getElementById('textOption').style.display = 'none';
+        document.getElementById('choiceOption').style.display = 'none';
+        document.getElementById('randomOption').style.display = 'block';
+        document.getElementById('manualOption').style.display = 'block';
+        
+        // Ajustar contenedores
+        levelSelectContainer.style.display = 'none';
+        roundsSelectContainer.style.display = 'none';
+        selectionTypeSelectContainer.style.display = 'none';
+        artistSelection.style.display = 'none';
+        playlistSelection.style.display = 'none';
+        languageSelectContainer.style.display = 'flex';
+        minWordsContainer.style.display = 'flex';
+        
+        // Establecer modo por defecto
+        document.getElementById("answerMode").value = 'random';
+        
+        initializeLyricMode();
+    } else {
+        ocultarLevel(); // Tu función existente para otros modos
+    }
+});
+
+// Actualizar la función del botón de inicio
 function updateStartButtonListener() {
     if (!startButton) {
         console.error('No se encontró el botón de inicio');
         return;
     }
 
-    const currentMode = answerModeSelect.value;
-    
-    // Crear un nuevo botón sin eventos
     const newStartButton = startButton.cloneNode(true);
     startButton.replaceWith(newStartButton);
     
-    // Actualizar la referencia al nuevo botón
     const updatedButton = document.getElementById('startButton');
+    const currentMode = document.getElementById("answerMode").value;
+    const gameCategory = document.getElementById("gameCategory").value;
     
-    // Añadir un solo listener según el modo
-    let eventHandler;
-    switch(currentMode) {
-        case 'random':
-            manualWordInput.style.display = 'none'; // Ocultar el input de palabra manual
-            languageSelectContainer.style.display = 'flex';
-            eventHandler = generateRandomWord;
-            console.log('Modo aleatorio activado');
-            break;
-        case 'manual':
-            manualWordInput.style.display = 'flex'; // Mostrar el input de palabra manual
-        lyricsInput.style.display = 'none'; // Ocultar el input de letras
-        checkButtonLyric.style.display = 'none'; // Ocultar el botón de comprobar letra
-        wordDisplay.textContent = 'Escribe una palabra';
-        languageSelectContainer.style.display = 'none';
-            eventHandler = setManualWord;
-            console.log('Modo manual activado');
-            break;
-        case 'text':
-        case 'choice':
-            eventHandler = initializeGame;
-            console.log(`Modo ${currentMode} activado`);
-            break;
-        default:
-            console.warn('Modo de respuesta desconocido:', currentMode);
-            return;
-    }
-    
-    // Añadir el nuevo event listener
-    if (eventHandler) {
-        updatedButton.addEventListener('click', eventHandler, { once: false });
+    if (gameCategory === "lyric") {
+        if (currentMode === "random") {
+            updatedButton.addEventListener('click', generateRandomWord);
+        } else if (currentMode === "manual") {
+            updatedButton.addEventListener('click', setManualWord);
+        }
+    } else {
+        updatedButton.addEventListener('click', initializeGame);
     }
 }
+
+// Actualizar listener cuando cambia el modo de respuesta
+document.getElementById("answerMode").addEventListener('change', updateStartButtonListener);
 
 // Inicialización - asegurarnos de que solo se ejecute una vez
 let initialized = false;
