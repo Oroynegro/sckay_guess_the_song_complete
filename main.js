@@ -149,7 +149,7 @@ function setManualWord() {
         
         
     } else {
-        alert('Por favor ingresa una palabra.');
+        cpmsole.log('Por favor ingresa una palabra.');
     }
 }
 
