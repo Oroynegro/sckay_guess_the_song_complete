@@ -258,17 +258,22 @@ function initializeLyricMode() {
     gameConfig.mode = "single";
     gameConfig.category = "lyric";
     gameConfig.answerMode = document.getElementById("answerMode").value;
+    console.log('1')
     
     // Configurar la UI según el modo de respuesta
     if (gameConfig.answerMode === "random") {
         manualWordInput.style.display = 'none';
         languageSelectContainer.style.display = 'flex';
+    console.log('1')
+
     } else if (gameConfig.answerMode === "manual") {
         manualWordInput.style.display = 'flex';
         languageSelectContainer.style.display = 'none';
         lyricsInput.style.display = 'none';
         checkButtonLyric.style.display = 'none';
         wordDisplay.textContent = 'Escribe una palabra';
+    console.log('1')
+
     }
 }
 
