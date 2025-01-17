@@ -112,11 +112,6 @@ async function loadWords() {
 // Llamar a loadWords cuando la página se haya cargado
 window.onload = loadWords;
 
-if (gameConfig.answerModeSelectValue === 'random'){
-    startButton.addEventListener('click', generateRandomWord);
-} else{
-    startButton.addEventListener('click', setManualWord);
-}
 
 checkButtonLyric.addEventListener('click', checkLyrics);
 
@@ -143,6 +138,7 @@ function generateRandomWord() {
     gameInfo.style.display='none'
     gameAreaSongArtist.style.display = 'none'
     gameAreaLyric.style.display = 'flex'
+    console.log('setmanualword');
 }
 
 function setManualWord() {
@@ -159,6 +155,8 @@ function setManualWord() {
         gameAreaSongArtist.style.display = 'none'
         gameAreaLyric.style.display = 'flex'
         
+    } else {
+        console.log('setmanualword');
     }
 }
 
@@ -658,6 +656,14 @@ function initializeGame() {
     updateCurrentPlayer();
 
     newGame();
+}
+//cambiar el botón de empezar
+if (gameConfig.answerModeSelectValue === 'random'){
+    startButton.addEventListener('click', generateRandomWord);
+} else if(gameConfig.answerModeSelectValue === 'manual'){
+    startButton.addEventListener('click', setManualWord);
+} else if(gameConfig.answerModeSelectValue === 'text' || gameConfig.answerModeSelectValue === 'choice'){
+    startButton.addEventListener('click', initializeGame);
 }
 // Función para configurar la UI según el modo de respuesta
 function setupAnswerMode() {
