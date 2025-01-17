@@ -754,7 +754,6 @@ function initializeGame() {
     gameConfig.mode = document.getElementById("gameMode").value;
     gameConfig.rounds = rounds;
     gameConfig.currentRound = 1;
-    gameConfig.usedTracks.clear();
     gameConfig.players.player1.score = 0;
     gameConfig.players.player2.score = 0;
     gameConfig.currentPlayer = "player1";
@@ -779,6 +778,9 @@ function initializeGame() {
 
     document.getElementById("gameConfig").style.display = "none";
     document.getElementById("gameArea").style.display = "block";
+    document.getElementById("gameAreaSongArtist").style.display = "block";
+    document.getElementById("playInstruction").style.display = "block";
+    document.getElementById("gameAreaLyric").style.display = "none";
     document.getElementById("currentRound").textContent =
         gameConfig.currentRound;
     document.getElementById("totalRounds").textContent = gameConfig.rounds;
