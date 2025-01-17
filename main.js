@@ -175,10 +175,17 @@ function updateStartButtonListener() {
     let eventHandler;
     switch(currentMode) {
         case 'random':
+            manualWordInput.style.display = 'none'; // Ocultar el input de palabra manual
+            languageSelectContainer.style.display = 'flex';
             eventHandler = generateRandomWord;
             console.log('Modo aleatorio activado');
             break;
         case 'manual':
+            manualWordInput.style.display = 'flex'; // Mostrar el input de palabra manual
+        lyricsInput.style.display = 'none'; // Ocultar el input de letras
+        checkButton.style.display = 'none'; // Ocultar el botón de comprobar letra
+        wordDisplay.textContent = 'Escribe una palabra';
+        languageSelectContainer.style.display = 'none';
             eventHandler = setManualWord;
             console.log('Modo manual activado');
             break;
@@ -212,7 +219,6 @@ function initialize() {
     // Configurar el event listener para cambios en el modo
     answerModeSelect.addEventListener('change', () => {
         updateStartButtonListener();
-        handleWordChoice();
     });
 
     // Configuración inicial
@@ -226,32 +232,6 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initialize);
 } else {
     initialize();
-}
-
-// Manejador que cambia el comportamiento del botón de inicio dependiendo de la opción seleccionada
-function handleWordChoice() {
-
-    if (answerModeSelectValue === 'manual') {
-        manualWordInput.style.display = 'flex'; // Mostrar el input de palabra manual
-        lyricsInput.style.display = 'none'; // Ocultar el input de letras
-        checkButton.style.display = 'none'; // Ocultar el botón de comprobar letra
-        wordDisplay.textContent = 'Escribe una palabra';
-        languageSelectContainer.style.display = 'none';
-
-        // Cambiar el manejador del botón a la función de escribir palabra
-        startButton.removeEventListener('click', generateRandomWord);
-        startButton.addEventListener('click', setManualWord);
-        console.log("10")
-    } else if (answerModeSelectValue === 'random'){
-        manualWordInput.style.display = 'none'; // Ocultar el input de palabra manual
-        languageSelectContainer.style.display = 'flex';
-
-        // Cambiar el manejador del botón a la función de generar palabra aleatoria
-        startButton.removeEventListener('click', setManualWord);
-        startButton.addEventListener('click', generateRandomWord);
-        console.log("11")
-
-    }
 }
 
 
