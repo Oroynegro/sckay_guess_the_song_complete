@@ -152,12 +152,12 @@ function setManualWord() {
     }
 }
 
-// Asegúrate de agregar el evento `change` al `wordChoiceSelect` para actualizar el manejador de eventos.
-wordChoiceSelect.addEventListener('change', handleWordChoice);
+// Asegúrate de agregar el evento `change` al `answerModeSelect` para actualizar el manejador de eventos.
+answerModeSelect.addEventListener('change', handleWordChoice);
 
 // Manejador que cambia el comportamiento del botón de inicio dependiendo de la opción seleccionada
 function handleWordChoice() {
-    const choice = wordChoiceSelect.value;
+    const choice = answerModeSelect.value;
 
     if (choice === 'manual') {
         manualWordInput.style.display = 'flex'; // Mostrar el input de palabra manual
@@ -180,7 +180,7 @@ function handleWordChoice() {
 }
 
 // Inicia el juego en función del modo seleccionado
-if (wordChoiceSelect.value === 'random') {
+if (answerModeSelect.value === 'random') {
     startButton.addEventListener('click', generateRandomWord);
 } else {
     startButton.addEventListener('click', setManualWord);
