@@ -159,8 +159,6 @@ function setManualWord() {
         gameAreaSongArtist.style.display = 'none'
         gameAreaLyric.style.display = 'flex'
         
-    } else {
-        console.log('Por favor ingresa una palabra.');
     }
 }
 
