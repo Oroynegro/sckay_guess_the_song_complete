@@ -617,7 +617,6 @@ function ocultarLevel() {
         languageSelectContainer.style.display='flex'
         minWordsContainer.style.display='flex'
         answerModeSelect.value = 'random';
-    }
 }
 
 // Listener para el cambio en el modo de juego
@@ -1019,7 +1018,7 @@ function updateScores() {
             <span class="player-name">${gameConfig.players.player1.name}</span><span class="separator-1">:</span> <span class="score">${gameConfig.players.player1.score}</span><span class="emoji"><img src="svg/points.svg" alt="puntos" class="svg-points"/></span>
         </div>
         <div class="player-stats">
-            <span class="correct-answer">${gameConfig.players.player1.correctAnswers}</span><span class="separator-2">/</span><span class="total-rounds">${gameConfig.rounds}</span>
+            <span class="correct-answer">${gameConfig.players.player1.correctAnswers}</span><span class="separator-2">/</span><span class="total-rounds">${gameConfig.currentRound}</span>
         </div>
     `;
 
@@ -1029,7 +1028,7 @@ function updateScores() {
             <span class="player-name">${gameConfig.players.player2.name}</span><span class="separator-1">: </span><span class="score">${gameConfig.players.player2.score}</span><span class="emoji"><img src="svg/points.svg" alt="puntos" class="svg-points"/></span>
         </div>
         <div class="player-stats">
-            <span class="correct-answer">${gameConfig.players.player2.correctAnswers}</span><span class="separator-2">/</span><span class="total-rounds">${gameConfig.rounds}</span>
+            <span class="correct-answer">${gameConfig.players.player2.correctAnswers}</span><span class="separator-2">/</span><span class="total-rounds">${gameConfig.currentRound}</span>
         </div>
     `;
     }
