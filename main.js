@@ -172,6 +172,7 @@ function handleWordChoice() {
         // Cambiar el manejador del botón a la función de escribir palabra
         startButton.removeEventListener('click', generateRandomWord);
         startButton.addEventListener('click', setManualWord);
+        console.log("1")
     } else if (choice === 'random'){
         manualWordInput.style.display = 'none'; // Ocultar el input de palabra manual
         languageSelectContainer.style.display = 'flex';
@@ -179,10 +180,12 @@ function handleWordChoice() {
         // Cambiar el manejador del botón a la función de generar palabra aleatoria
         startButton.removeEventListener('click', setManualWord);
         startButton.addEventListener('click', generateRandomWord);
+        console.log("2")
     } else {
         startButton.removeEventListener('click', setManualWord)
         startButton.removeEventListener('click', generateRandomWord)
         startButton.addEventListener('click', initializeGame)
+        console.log("3")
     }
 }
 
