@@ -160,13 +160,7 @@ answerModeSelect.addEventListener('change', handleWordChoice);
 
 // Manejador que cambia el comportamiento del botón de inicio dependiendo de la opción seleccionada
 function handleWordChoice() {
-    if (answerModeSelectValue ==='text'|| answerModeSelectValue ==='choice'){
-        startButton.removeEventListener('click', setManualWord)
-        startButton.removeEventListener('click', generateRandomWord)
-        startButton.addEventListener('click', initializeGame)
-        console.log("3")
-    }
-    else if (answerModeSelectValue === 'manual') {
+ if (answerModeSelectValue === 'manual') {
         manualWordInput.style.display = 'flex'; // Mostrar el input de palabra manual
         lyricsInput.style.display = 'none'; // Ocultar el input de letras
         checkButtonLyric.style.display = 'none'; // Ocultar el botón de comprobar letra
@@ -651,11 +645,15 @@ function initializeGame() {
 //cambiar el botón de empezar
 if (gameConfig.answerModeSelectValue === 'random'){
     startButton.addEventListener('click', generateRandomWord);
+    console.log('1')
 } else if(gameConfig.answerModeSelectValue === 'manual'){
+    console.log('2')
     startButton.addEventListener('click', setManualWord);
 } else if(gameConfig.answerModeSelectValue === 'text' ){
+    console.log('3')
     startButton.addEventListener('click', initializeGame);
 }else if(gameConfig.answerModeSelectValue === 'choice'){
+    console.log('4')
     startButton.addEventListener('click', initializeGame);
 }
 // Función para configurar la UI según el modo de respuesta
