@@ -86,7 +86,20 @@ fullscreenBtn.addEventListener("click", () => {
         }
     }
 });
-
+//cambiar el botón de empezar
+if (answerModeSelectValue === 'random'){
+    startButton.addEventListener('click', generateRandomWord);
+    console.log('1')
+} else if(answerModeSelectValue === 'manual'){
+    console.log('2')
+    startButton.addEventListener('click', setManualWord);
+} else if(answerModeSelectValue === 'text' ){
+    console.log('3')
+    startButton.addEventListener('click', initializeGame);
+}else if(answerModeSelectValue === 'choice'){
+    console.log('4')
+    startButton.addEventListener('click', initializeGame);
+}
 
 // Función auxiliar para limpiar strings
 function cleanString(str) {
@@ -170,7 +183,7 @@ function handleWordChoice() {
         // Cambiar el manejador del botón a la función de escribir palabra
         startButton.removeEventListener('click', generateRandomWord);
         startButton.addEventListener('click', setManualWord);
-        console.log("1")
+        console.log("5")
     } else if (answerModeSelectValue === 'random'){
         manualWordInput.style.display = 'none'; // Ocultar el input de palabra manual
         languageSelectContainer.style.display = 'flex';
@@ -178,7 +191,7 @@ function handleWordChoice() {
         // Cambiar el manejador del botón a la función de generar palabra aleatoria
         startButton.removeEventListener('click', setManualWord);
         startButton.addEventListener('click', generateRandomWord);
-        console.log("2")
+        console.log("6")
     }
 }
 
@@ -642,20 +655,7 @@ function initializeGame() {
 
     newGame();
 }
-//cambiar el botón de empezar
-if (gameConfig.answerModeSelectValue === 'random'){
-    startButton.addEventListener('click', generateRandomWord);
-    console.log('1')
-} else if(gameConfig.answerModeSelectValue === 'manual'){
-    console.log('2')
-    startButton.addEventListener('click', setManualWord);
-} else if(gameConfig.answerModeSelectValue === 'text' ){
-    console.log('3')
-    startButton.addEventListener('click', initializeGame);
-}else if(gameConfig.answerModeSelectValue === 'choice'){
-    console.log('4')
-    startButton.addEventListener('click', initializeGame);
-}
+
 // Función para configurar la UI según el modo de respuesta
 function setupAnswerMode() {
     const guessContainer = document.querySelector(".guess-container");
