@@ -37,6 +37,7 @@ const gameAreaSongArtist = document.getElementById('gameAreaSongArtist')
 const gameAreaLyric = document.getElementById('gameAreaLyric');
 const gameConfigContainer = document.getElementById('gameConfig');
 
+startButton.addEventListener('click', initializeGame)
 
 // Primero, modificar el gameConfig existente
 let gameConfig = {
@@ -662,7 +663,9 @@ if (gameConfig.answerModeSelectValue === 'random'){
     startButton.addEventListener('click', generateRandomWord);
 } else if(gameConfig.answerModeSelectValue === 'manual'){
     startButton.addEventListener('click', setManualWord);
-} else if(gameConfig.answerModeSelectValue === 'text' || gameConfig.answerModeSelectValue === 'choice'){
+} else if(gameConfig.answerModeSelectValue === 'text' ){
+    startButton.addEventListener('click', initializeGame);
+}else if(gameConfig.answerModeSelectValue === 'choice'){
     startButton.addEventListener('click', initializeGame);
 }
 // Función para configurar la UI según el modo de respuesta
