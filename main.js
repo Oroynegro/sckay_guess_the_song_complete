@@ -168,8 +168,45 @@ function setManualWord() {
     }
 }
 
-// Asegúrate de agregar el evento `change` al `answerModeSelect` para actualizar el manejador de eventos.
-answerModeSelect.addEventListener('change', handleWordChoice);
+// Instead, create a function to update the button's event listener
+function updateStartButtonListener() {
+    const currentMode = document.getElementById("answerMode").value;
+    
+    // Remove all existing event listeners by cloning the button
+    const oldButton = startButton;
+    const newButton = oldButton.cloneNode(true);
+    oldButton.parentNode.replaceChild(newButton, oldButton);
+    
+    // Add the appropriate event listener based on the current mode
+    switch(currentMode) {
+        case 'random':
+            newButton.addEventListener('click', generateRandomWord);
+            console.log('Random mode active');
+            break;
+        case 'manual':
+            newButton.addEventListener('click', setManualWord);
+            console.log('Manual mode active');
+            break;
+        case 'text':
+        case 'choice':
+            newButton.addEventListener('click', initializeGame);
+            console.log(`${currentMode} mode active`);
+            break;
+        default:
+            console.warn('Unknown answer mode:', currentMode);
+    }
+}
+
+// Add event listener to the answer mode select to update the button when changed
+answerModeSelect.addEventListener('change', function() {
+    updateStartButtonListener();
+    handleWordChoice();
+});
+
+// Initialize the correct event listener when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    updateStartButtonListener();
+});
 
 // Manejador que cambia el comportamiento del botón de inicio dependiendo de la opción seleccionada
 function handleWordChoice() {
