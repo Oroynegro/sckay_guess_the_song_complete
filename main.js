@@ -23,7 +23,8 @@ const manualWordInputField = document.getElementById('manualWord'); // Campo de 
 const languageSelectContainer = document.getElementById('languageSelectContainer');
 const minWordsContainer = document.getElementById('minWordsContainer');
 const minWords = document.getElementById('minWords');
-const answerModeSelect= document.getElementById("answerMode").value;
+const answerModeSelectValue= document.getElementById("answerMode").value;
+const answerModeSelect= document.getElementById("answerMode");
 const textOption = document.getElementById('textOption');
 const choiceOption = document.getElementById('choiceOption');
 const randomOption = document.getElementById('randomOption');
@@ -105,7 +106,7 @@ async function loadWords() {
 }
 
 
-if (gameConfig.answerModeSelect === 'random'){
+if (gameConfig.answerModeSelectValue === 'random'){
     startButton.addEventListener('click', generateRandomWord);
 } else{
     startButton.addEventListener('click', setManualWord);
