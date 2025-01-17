@@ -32,6 +32,7 @@ const manualOption = document.getElementById('manualOption');
 const startButton = document.getElementById('startButton');
 const resultLyric = document.getElementById('resultLyric');
 const gameAreaLyric = document.getElementById('gameAreaLyric');
+const gameConfigContainer = document.getElementById('gameConfig');
 
 
 // Primero, modificar el gameConfig existente
@@ -84,6 +85,7 @@ fullscreenBtn.addEventListener("click", () => {
     }
 });
 
+
 // Función auxiliar para limpiar strings
 function cleanString(str) {
     if (!str) return "";
@@ -104,7 +106,8 @@ async function loadWords() {
         console.error('Error al cargar las palabras:', error);
     }
 }
-
+// Llamar a loadWords cuando la página se haya cargado
+window.onload = loadWords;
 
 if (gameConfig.answerModeSelectValue === 'random'){
     startButton.addEventListener('click', generateRandomWord);
@@ -132,7 +135,7 @@ function generateRandomWord() {
     startButton.style.display = 'none';
     resultLyric.style.display = 'none';
     lyricsInput.value = '';
-    gameConfig.style.display = 'none'
+    gameConfigContainer.style.display = 'none'
     gameArea.style.display = 'flex'
 }
 
@@ -144,7 +147,7 @@ function setManualWord() {
         lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
         lyricsInput.style.display = 'block';
         checkButtonLyric.style.display = 'block';
-        gameConfig.style.display = 'none';
+        gameConfigContainer.style.display = 'none';
         gameArea.style.display = 'flex'
         
         
@@ -526,8 +529,7 @@ function ocultarLevel() {
             optionToDisable.disabled = false; // Habilitar "playlist"
         }
     } else if (gameCategory.value === "lyric"){
-        // Llamar a loadWords cuando la página se haya cargado
-        loadWords;
+        
         textOption.style.display = 'none';
         choiceOption.style.display = 'none';
         randomOption.style.display = 'block';
