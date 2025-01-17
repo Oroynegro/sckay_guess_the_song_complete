@@ -10,32 +10,33 @@ const roundsSelectContainer = document.getElementById('roundsSelectContainer');
 const selectionTypeSelectContainer = document.getElementById('selectionTypeSelectContainer');
 const artistSelection = document.getElementById('artistSelection');
 const playlistSelection = document.getElementById('playlistSelection');
-const answerModeSelect = document.getElementById('answerMode')
 
 
-// Variables globales para el modo lírico
-let currentWord = '';
-let palabras = { espanol: [], ingles: [] };
-
-// Elementos del DOM para el modo lírico
+//guess the lyric
 const wordDisplay = document.getElementById('wordDisplay');
 const lyricsInput = document.getElementById('lyricsInput');
 const checkButtonLyric = document.getElementById('checkButtonLyric');
 const loading = document.getElementById('loading');
-const languageSelect = document.getElementById('languageSelect');
-const manualWordInput = document.getElementById('manualWordInput');
-const manualWordInputField = document.getElementById('manualWord');
+const languageSelect = document.getElementById('languageSelect'); // Elemento de selección de idioma
+const manualWordInput = document.getElementById('manualWordInput'); // Campo de entrada de palabra manual
+const manualWordInputField = document.getElementById('manualWord'); // Campo de texto para palabra manual
 const languageSelectContainer = document.getElementById('languageSelectContainer');
 const minWordsContainer = document.getElementById('minWordsContainer');
 const minWords = document.getElementById('minWords');
+const answerModeSelectValue= document.getElementById("answerMode").value;
+const answerModeSelect= document.getElementById("answerMode");
+const textOption = document.getElementById('textOption');
+const choiceOption = document.getElementById('choiceOption');
+const randomOption = document.getElementById('randomOption');
+const manualOption = document.getElementById('manualOption');
+const startButton = document.getElementById('startButton');
 const resultLyric = document.getElementById('resultLyric');
-const gameArea = document.getElementById('gameArea');
-const gameInfo = document.getElementById('gameInfo');
-const gameAreaSongArtist = document.getElementById('gameAreaSongArtist');
+const gameArea = document.getElementById('gameArea')
+const gameInfo = document.getElementById('gameInfo')
+const gameAreaSongArtist = document.getElementById('gameAreaSongArtist')
 const gameAreaLyric = document.getElementById('gameAreaLyric');
 const gameConfigContainer = document.getElementById('gameConfig');
-const playInstruction = document.getElementById('playInstruction');
-const startButton = document.getElementById('startButton');
+const playInstruction = document.getElementById('playInstruction')
 
 // Cargar las palabras desde el archivo JSON
 async function loadWords() {
@@ -754,6 +755,7 @@ function initializeGame() {
     gameConfig.mode = document.getElementById("gameMode").value;
     gameConfig.rounds = rounds;
     gameConfig.currentRound = 1;
+    gameConfig.usedTracks.clear();
     gameConfig.players.player1.score = 0;
     gameConfig.players.player2.score = 0;
     gameConfig.currentPlayer = "player1";
