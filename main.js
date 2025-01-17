@@ -159,7 +159,6 @@ function setManualWord() {
         gameAreaSongArtist.style.display = 'none'
         gameAreaLyric.style.display = 'flex'
         
-        
     } else {
         console.log('Por favor ingresa una palabra.');
     }
@@ -182,13 +181,15 @@ function handleWordChoice() {
         // Cambiar el manejador del botón a la función de escribir palabra
         startButton.removeEventListener('click', generateRandomWord);
         startButton.addEventListener('click', setManualWord);
-    } else {
+    } else if (choice === 'random'){
         manualWordInput.style.display = 'none'; // Ocultar el input de palabra manual
         languageSelectContainer.style.display = 'flex';
 
         // Cambiar el manejador del botón a la función de generar palabra aleatoria
         startButton.removeEventListener('click', setManualWord);
         startButton.addEventListener('click', generateRandomWord);
+    } else {
+        startButton.addEventListener('click', initializeGame)
     }
 }
 
@@ -549,6 +550,8 @@ function ocultarLevel() {
         selectionTypeSelectContainer.style.display='none'
         artistSelection.style.display='none'
         playlistSelection.style.display='none'
+        languageSelectContainer.style.display='block'
+        minWordsContainer.style.display='block'
     }
 }
 

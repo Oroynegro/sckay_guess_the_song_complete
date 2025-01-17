@@ -31,6 +31,18 @@
     flex-direction: column;
     align-items: center;
 }
+textarea {
+    resize: none; /* Evita que el textarea se pueda redimensionar */
+    padding: 10px;
+    border: none;
+    border-radius: 15px;
+    background: #fff;
+    font-size: 1em;
+    width: 100%;
+    margin-bottom: 20px;
+    min-height: 4em;
+}
+
 
 
 

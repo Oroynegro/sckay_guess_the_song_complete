@@ -141,14 +141,14 @@
                         />
                     </div>
 
-                    <div id="languageSelectContainer">
+                    <div id="languageSelectContainer" style="display: none;">
                         <label for="languageSelect">Idioma:</label>
                         <select id="languageSelect">
                             <option value="espanol">Español</option>
                             <option value="ingles">Inglés</option>
                         </select>
                     </div>
-                    <div id="minWordsContainer">
+                    <div id="minWordsContainer" style="display: none;">
                         <label for="minWords">Número de palabras consecutivas:</label>
                         <input id="minWords" type="number" value="3" min="3" max="100"></input>
                     </div>
@@ -265,7 +265,7 @@
                     <div id="wordDisplay" class="word-display"></div>
                 <textarea id="lyricsInput" placeholder="" style="display: none;"></textarea>
                 <button id="checkButtonLyric">Verificar Letra</button>
-                <div id="loading" class="loading">Verificando...</div>
+                <div id="loading" class="loading" style="display: none;">Verificando...</div>
                 <div id="resultLyric" class="result"></div>
                 </div>
             </div>
