@@ -617,6 +617,7 @@ function ocultarLevel() {
         languageSelectContainer.style.display='flex'
         minWordsContainer.style.display='flex'
         answerModeSelect.value = 'random';
+    }
 }
 
 // Listener para el cambio en el modo de juego
