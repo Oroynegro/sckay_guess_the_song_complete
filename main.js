@@ -38,6 +38,61 @@ const gameAreaLyric = document.getElementById('gameAreaLyric');
 const gameConfigContainer = document.getElementById('gameConfig');
 const playInstruction = document.getElementById('playInstruction')
 
+let gameConfig = {
+    mode: "single",
+    rounds: 5,
+    category: "song",
+    currentRound: 1,
+    usedTracks: new Set(),
+    answerMode: "text", // Nuevo campo para el modo de respuesta
+    options: [], // Almacenará las opciones para el modo múltiple
+    players: {
+        player1: { name: "Jugador 1", score: 0, correctAnswers: 0 },
+        player2: { name: "Jugador 2", score: 0, correctAnswers: 0 },
+    },
+    currentPlayer: "player1",
+};
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+const gameContainer = document.getElementById("gameContainer");
+fullscreenBtn.addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+        // Entrar en pantalla completa
+        if (gameContainer.requestFullscreen) {
+            gameContainer.requestFullscreen();
+        } else if (gameContainer.mozRequestFullScreen) {
+            // Firefox
+            gameContainer.mozRequestFullScreen();
+        } else if (gameContainer.webkitRequestFullscreen) {
+            // Chrome, Safari, Opera
+            gameContainer.webkitRequestFullscreen();
+        } else if (gameContainer.msRequestFullscreen) {
+            // Edge/IE
+            gameContainer.msRequestFullscreen();
+        }
+    } else {
+        // Salir de pantalla completa
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            // Firefox
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+            // Chrome, Safari, Opera
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+            // Edge/IE
+            document.msExitFullscreen();
+        }
+    }
+});
+
+// Función auxiliar para limpiar strings
+function cleanString(str) {
+    if (!str) return "";
+    // Elimina escape characters y normaliza apóstrofes
+    return str.replace(/\\'/g, "'").replace(/\\/g, "").trim();
+}
+
 // Cargar las palabras desde el archivo JSON
 async function loadWords() {
     try {
