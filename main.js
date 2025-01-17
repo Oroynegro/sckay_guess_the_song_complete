@@ -85,6 +85,8 @@ fullscreenBtn.addEventListener("click", () => {
         }
     }
 });
+let currentWord = '';
+let palabras = { espanol: [], ingles: [] };  // Inicializamos un objeto para las palabras en ambos idiomas
 
 // Función auxiliar para limpiar strings
 function cleanString(str) {
