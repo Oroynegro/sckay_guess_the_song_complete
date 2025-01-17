@@ -36,6 +36,7 @@ const gameInfo = document.getElementById('gameInfo')
 const gameAreaSongArtist = document.getElementById('gameAreaSongArtist')
 const gameAreaLyric = document.getElementById('gameAreaLyric');
 const gameConfigContainer = document.getElementById('gameConfig');
+const playInstruction = document.getElementById('playInstruction')
 
 // Primero, modificar el gameConfig existente
 let gameConfig = {
@@ -135,7 +136,9 @@ function generateRandomWord() {
     gameArea.style.display='block'
     gameInfo.style.display='none'
     gameAreaSongArtist.style.display = 'none'
+    playInstruction.style.display= 'none'
     gameAreaLyric.style.display = 'flex'
+
 }
 
 function setManualWord() {
@@ -150,7 +153,9 @@ function setManualWord() {
         gameArea.style.display='block'
         gameInfo.style.display='none'
         gameAreaSongArtist.style.display = 'none'
+        playInstruction.style.display= 'none'
         gameAreaLyric.style.display = 'flex'
+        
     }
 }
 
@@ -612,6 +617,7 @@ function ocultarLevel() {
         languageSelectContainer.style.display='flex'
         minWordsContainer.style.display='flex'
         answerModeSelect.value = 'random';
+        play
     }
 }
 
@@ -712,6 +718,7 @@ function initializeGame() {
     document.getElementById("gameConfig").style.display = "none";
     document.getElementById("gameArea").style.display = "block";
     document.getElementById("gameAreaSongArtist").style.display = "block";
+    document.getElementById("playInstruction").style.display = "block";
     document.getElementById("gameAreaLyric").style.display = "none";
     document.getElementById("currentRound").textContent =
         gameConfig.currentRound;
