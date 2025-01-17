@@ -37,7 +37,6 @@ const gameAreaSongArtist = document.getElementById('gameAreaSongArtist')
 const gameAreaLyric = document.getElementById('gameAreaLyric');
 const gameConfigContainer = document.getElementById('gameConfig');
 
-
 // Primero, modificar el gameConfig existente
 let gameConfig = {
     mode: "single",
@@ -180,6 +179,10 @@ function handleWordChoice() {
         // Cambiar el manejador del botón a la función de generar palabra aleatoria
         startButton.removeEventListener('click', setManualWord);
         startButton.addEventListener('click', generateRandomWord);
+    } else {
+        startButton.removeEventListener('click', setManualWord)
+        startButton.removeEventListener('click', generateRandomWord)
+        startButton.addEventListener('click', initializeGame)
     }
 }
 
@@ -485,7 +488,6 @@ function ocultarLevel() {
     // Cuando se selecciona " adivinar el artista"
     if (gameCategory.value === "artist") {
         const levelSelect = document.querySelector(".level-select");
-        startButton.addEventListener('click', initializeGame);
         if (levelSelect) {
             levelSelect.style.display = "none";
             console.log("artist");
@@ -511,7 +513,6 @@ function ocultarLevel() {
     } else if (gameCategory.value === "song"){
         // Si es adivina la "song"
         const levelSelect = document.querySelector(".level-select");
-        startButton.addEventListener('click', initializeGame);
         if (levelSelect) {
             levelSelect.style.display = "flex";
             console.log("song");
