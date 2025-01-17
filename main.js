@@ -264,7 +264,7 @@ function initializeLyricMode() {
     if (gameConfig.answerMode === "random") {
         manualWordInput.style.display = 'none';
         languageSelectContainer.style.display = 'flex';
-    console.log('1')
+    console.log('2')
 
     } else if (gameConfig.answerMode === "manual") {
         manualWordInput.style.display = 'flex';
@@ -272,7 +272,7 @@ function initializeLyricMode() {
         lyricsInput.style.display = 'none';
         checkButtonLyric.style.display = 'none';
         wordDisplay.textContent = 'Escribe una palabra';
-    console.log('1')
+    console.log('3')
 
     }
 }
