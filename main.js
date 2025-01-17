@@ -331,9 +331,18 @@ function updateStartButtonListener() {
         updatedButton.addEventListener('click', initializeGame);
     }
 }
+function lyricMode (){
+    if (gameConfig.answerModeSelectValue === 'random'){
+        manualWordInput.style.display ='flex';
+        languageSelectContainer.style.display = 'none';
+    } else if (gameConfig.answerModeSelectValue === 'manual'){
+        manualWordInput.style.display ='flex';
+        languageSelectContainer.style.display = 'none';
+    }
+}
 
 // Actualizar listener cuando cambia el modo de respuesta
-document.getElementById("answerMode").addEventListener('change', updateStartButtonListener);
+document.getElementById("answerMode").addEventListener('change', updateStartButtonListener, lyricMode);
 
 // Inicialización - asegurarnos de que solo se ejecute una vez
 let initialized = false;
