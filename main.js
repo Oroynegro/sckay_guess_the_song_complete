@@ -31,6 +31,8 @@ const randomOption = document.getElementById('randomOption');
 const manualOption = document.getElementById('manualOption');
 const startButton = document.getElementById('startButton');
 const resultLyric = document.getElementById('resultLyric');
+const gameArea = document.getElementById('gameArea')
+const gameAreaSongArtist = document.getElementById('gameAreaSongArtist')
 const gameAreaLyric = document.getElementById('gameAreaLyric');
 const gameConfigContainer = document.getElementById('gameConfig');
 
@@ -136,7 +138,9 @@ function generateRandomWord() {
     resultLyric.style.display = 'none';
     lyricsInput.value = '';
     gameConfigContainer.style.display = 'none'
-    gameArea.style.display = 'flex'
+    gameArea.style.display='block'
+    gameAreaSongArtist.style.display = 'none'
+    gameAreaLyric.style.display = 'flex'
 }
 
 function setManualWord() {
@@ -148,7 +152,9 @@ function setManualWord() {
         lyricsInput.style.display = 'block';
         checkButtonLyric.style.display = 'block';
         gameConfigContainer.style.display = 'none';
-        gameArea.style.display = 'flex'
+        gameArea.style.display='block'
+        gameAreaSongArtist.style.display = 'none'
+        gameAreaLyric.style.display = 'flex'
         
         
     } else {
@@ -200,7 +206,7 @@ async function checkLyrics() {
     const lyrics = normalizeText(lyricsInput.value.trim());
     
     if (lyrics.split(' ').length <= minWords.value-1) {
-        showResultLyricLyric(`Ingresa al menos ${minWords.value} palabras consecutivas`, false);
+        showResultLyric(`Ingresa al menos ${minWords.value} palabras consecutivas`, false);
         return;
     }
 
@@ -534,7 +540,6 @@ function ocultarLevel() {
         choiceOption.style.display = 'none';
         randomOption.style.display = 'block';
         manualOption.style.display = 'block';
-        gameAreaLyric.style.display='flex'
 
         levelSelectContainer.style.display='none'
         roundsSelectContainer.style.display='none'
@@ -640,6 +645,8 @@ function initializeGame() {
 
     document.getElementById("gameConfig").style.display = "none";
     document.getElementById("gameArea").style.display = "block";
+    document.getElementById("gameAreaSongArtist").style.display = "block";
+    document.getElementById("gameAreaLyric").style.display = "none";
     document.getElementById("currentRound").textContent =
         gameConfig.currentRound;
     document.getElementById("totalRounds").textContent = gameConfig.rounds;
@@ -1217,7 +1224,6 @@ function displaySongInfo() {
             <p><strong>Canción:</strong> ${currentTrack.name}</p>
             <p><strong>Artista:</strong> ${currentTrack.artists[0].name}</p>
         `;
-    document.getElementById("answerContainer").style.display = "block";
 }
 
 // Función para buscar artistas
@@ -1682,7 +1688,6 @@ function startTimer() {
 }
 
 function resetGameUI() {
-    document.getElementById("answerContainer").style.display = "none";
     document.getElementById("playInstruction").style.display = "flex";
     document.getElementById("songInfo").innerHTML = "";
 }
