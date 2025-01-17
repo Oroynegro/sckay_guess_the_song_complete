@@ -183,7 +183,7 @@ function updateStartButtonListener() {
         case 'manual':
             manualWordInput.style.display = 'flex'; // Mostrar el input de palabra manual
         lyricsInput.style.display = 'none'; // Ocultar el input de letras
-        checkButton.style.display = 'none'; // Ocultar el botón de comprobar letra
+        checkButtonLyric.style.display = 'none'; // Ocultar el botón de comprobar letra
         wordDisplay.textContent = 'Escribe una palabra';
         languageSelectContainer.style.display = 'none';
             eventHandler = setManualWord;
@@ -535,6 +535,14 @@ function ocultarLevel() {
 
     // Cuando se selecciona " adivinar el artista"
     if (gameCategory.value === "artist") {
+        levelSelectContainer.style.display='flex'
+        roundsSelectContainer.style.display='flex'
+        selectionTypeSelectContainer.style.display='flex'
+        artistSelection.style.display='flex'
+        playlistSelection.style.display='none'
+        languageSelectContainer.style.display='none'
+        minWordsContainer.style.display='none'
+        
         const levelSelect = document.querySelector(".level-select");
         if (levelSelect) {
             levelSelect.style.display = "none";
@@ -559,6 +567,13 @@ function ocultarLevel() {
             }
         }
     } else if (gameCategory.value === "song"){
+        levelSelectContainer.style.display='flex'
+        roundsSelectContainer.style.display='flex'
+        selectionTypeSelectContainer.style.display='flex'
+        artistSelection.style.display='flex'
+        playlistSelection.style.display='none'
+        languageSelectContainer.style.display='none'
+        minWordsContainer.style.display='none'
         // Si es adivina la "song"
         const levelSelect = document.querySelector(".level-select");
         if (levelSelect) {
@@ -575,16 +590,16 @@ function ocultarLevel() {
         
         textOption.style.display = 'none';
         choiceOption.style.display = 'none';
-        randomOption.style.display = 'block';
-        manualOption.style.display = 'block';
+        randomOption.style.display = 'flex';
+        manualOption.style.display = 'flex';
 
         levelSelectContainer.style.display='none'
         roundsSelectContainer.style.display='none'
         selectionTypeSelectContainer.style.display='none'
         artistSelection.style.display='none'
         playlistSelection.style.display='none'
-        languageSelectContainer.style.display='block'
-        minWordsContainer.style.display='block'
+        languageSelectContainer.style.display='flex'
+        minWordsContainer.style.display='flex'
     }
 }
 
