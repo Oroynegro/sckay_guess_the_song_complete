@@ -32,6 +32,7 @@ const manualOption = document.getElementById('manualOption');
 const startButton = document.getElementById('startButton');
 const resultLyric = document.getElementById('resultLyric');
 const gameArea = document.getElementById('gameArea')
+const gameInfo = document.getElementById('gameInfo')
 const gameAreaSongArtist = document.getElementById('gameAreaSongArtist')
 const gameAreaLyric = document.getElementById('gameAreaLyric');
 const gameConfigContainer = document.getElementById('gameConfig');
@@ -139,6 +140,7 @@ function generateRandomWord() {
     lyricsInput.value = '';
     gameConfigContainer.style.display = 'none'
     gameArea.style.display='block'
+    gameInfo.style.display='none'
     gameAreaSongArtist.style.display = 'none'
     gameAreaLyric.style.display = 'flex'
 }
@@ -153,6 +155,7 @@ function setManualWord() {
         checkButtonLyric.style.display = 'block';
         gameConfigContainer.style.display = 'none';
         gameArea.style.display='block'
+        gameInfo.style.display='none'
         gameAreaSongArtist.style.display = 'none'
         gameAreaLyric.style.display = 'flex'
         
@@ -213,7 +216,7 @@ async function checkLyrics() {
     // Validación de la palabra en la letra
     const wordRegex = new RegExp(`\\b${currentWord}\\b`, 'i');
     if (!wordRegex.test(lyrics)) {
-        showResultLyricLyric(`La palabra "${currentWord}" no está presente en tu texto`, false);
+        showResultLyric(`La palabra "${currentWord}" no está presente en tu texto`, false);
         return;
     }
 
@@ -236,9 +239,9 @@ async function checkLyrics() {
         const data = await response.json();
 
         if (data.exists && data.verified) {
-            showResultLyricLyric('¡Correcto! Letra verificada.', true, data);
+            showResultLyric('¡Correcto! Letra verificada.', true, data);
         } else if (data.exists && !data.verified) {
-            showResultLyricLyric(
+            showResultLyric(
                 `<p id="posible">Se encontró una posible coincidencia, pero no se pudo verificar la letra exacta.</p>`,
                 false,
                 data
