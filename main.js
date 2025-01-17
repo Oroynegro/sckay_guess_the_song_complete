@@ -37,7 +37,6 @@ const gameAreaSongArtist = document.getElementById('gameAreaSongArtist')
 const gameAreaLyric = document.getElementById('gameAreaLyric');
 const gameConfigContainer = document.getElementById('gameConfig');
 
-startButton.addEventListener('click', initializeGame)
 
 // Primero, modificar el gameConfig existente
 let gameConfig = {
@@ -181,8 +180,6 @@ function handleWordChoice() {
         // Cambiar el manejador del botón a la función de generar palabra aleatoria
         startButton.removeEventListener('click', setManualWord);
         startButton.addEventListener('click', generateRandomWord);
-    } else {
-        startButton.addEventListener('click', initializeGame)
     }
 }
 
