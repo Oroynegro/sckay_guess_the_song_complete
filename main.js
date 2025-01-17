@@ -779,9 +779,6 @@ function initializeGame() {
 
     document.getElementById("gameConfig").style.display = "none";
     document.getElementById("gameArea").style.display = "block";
-    document.getElementById("gameAreaSongArtist").style.display = "block";
-    document.getElementById("playInstruction").style.display = "block";
-    document.getElementById("gameAreaLyric").style.display = "none";
     document.getElementById("currentRound").textContent =
         gameConfig.currentRound;
     document.getElementById("totalRounds").textContent = gameConfig.rounds;
