@@ -139,7 +139,6 @@ function generateRandomWord() {
     gameInfo.style.display='none'
     gameAreaSongArtist.style.display = 'none'
     gameAreaLyric.style.display = 'flex'
-    console.log('setmanualword');
 }
 
 function setManualWord() {
@@ -155,9 +154,6 @@ function setManualWord() {
         gameInfo.style.display='none'
         gameAreaSongArtist.style.display = 'none'
         gameAreaLyric.style.display = 'flex'
-        
-    } else {
-        console.log('setmanualword');
     }
 }
 
@@ -190,12 +186,6 @@ function handleWordChoice() {
     }
 }
 
-// Inicia el juego en función del modo seleccionado
-if (answerModeSelect.value === 'random') {
-    startButton.addEventListener('click', generateRandomWord);
-} else {
-    startButton.addEventListener('click', setManualWord);
-}
 
 async function checkLyrics() {
     const normalizeText = (text) =>
@@ -1229,11 +1219,6 @@ function updateGameStatus(message, status) {
 
 function displaySongInfo() {
     document.getElementById("playInstruction").style.display = "none";
-    const songInfo = document.getElementById("songInfo");
-    songInfo.innerHTML = `
-            <p><strong>Canción:</strong> ${currentTrack.name}</p>
-            <p><strong>Artista:</strong> ${currentTrack.artists[0].name}</p>
-        `;
 }
 
 // Función para buscar artistas
