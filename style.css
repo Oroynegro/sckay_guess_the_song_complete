@@ -10,6 +10,14 @@
     font-size: 2em;
     text-align: center;
 }
+#resultLyric{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 4px;
+}
 
 .titleSong{
     font-size: 1.8em;
@@ -31,6 +39,17 @@
     flex-direction: column;
     align-items: center;
 }
+#posible{
+    color: #909090;
+}
+.word-display {
+    color: #1ed760;
+    font-size: 3em;
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    border-radius: 4px;
+}
 textarea {
     resize: none; /* Evita que el textarea se pueda redimensionar */
     padding: 10px;
@@ -42,7 +61,6 @@ textarea {
     margin-bottom: 20px;
     min-height: 4em;
 }
-
 
 
 

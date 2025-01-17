@@ -522,6 +522,7 @@ async function getTracksByArtist(artistName, isFirstRound = true) {
 
         // Limpiar la promesa de carga una vez completada
         delete loadingPromises[`${artistName}-${difficulty}`];
+        console.log('se esta ejecutando')
 
         return tracks;
     } catch (error) {
