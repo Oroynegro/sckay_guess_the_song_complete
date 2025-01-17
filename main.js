@@ -185,7 +185,7 @@ function handleWordChoice() {
         startButton.removeEventListener('click', generateRandomWord);
         startButton.addEventListener('click', setManualWord);
         console.log("10")
-    } else {
+    } else if (answerModeSelectValue === 'random'){
         manualWordInput.style.display = 'none'; // Ocultar el input de palabra manual
         languageSelectContainer.style.display = 'flex';
 
