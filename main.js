@@ -484,11 +484,11 @@ document
 function ocultarLevel() {
     const gameCategory = document.querySelector("#gameCategory");
     const selectionTypeComprobation = document.querySelector("#selectionType");
-    startButton.addEventListener('click', initializeGame);
 
     // Cuando se selecciona " adivinar el artista"
     if (gameCategory.value === "artist") {
         const levelSelect = document.querySelector(".level-select");
+        startButton.addEventListener('click', initializeGame);
         if (levelSelect) {
             levelSelect.style.display = "none";
             console.log("artist");
