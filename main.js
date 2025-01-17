@@ -155,8 +155,8 @@ function setManualWord() {
 }
 
 // Instead, create a function to update the button's event listener
+// Función para actualizar el listener del botón
 function updateStartButtonListener() {
-    // Verificar que el botón existe
     if (!startButton) {
         console.error('No se encontró el botón de inicio');
         return;
@@ -164,60 +164,69 @@ function updateStartButtonListener() {
 
     const currentMode = answerModeSelect.value;
     
-    // En lugar de reemplazar el botón, removemos los event listeners anteriores
-    startButton.replaceWith(startButton.cloneNode(true));
+    // Crear un nuevo botón sin eventos
+    const newStartButton = startButton.cloneNode(true);
+    startButton.replaceWith(newStartButton);
     
-    // Necesitamos obtener la referencia al nuevo botón
-    const newStartButton = document.getElementById('startButton');
+    // Actualizar la referencia al nuevo botón
+    const updatedButton = document.getElementById('startButton');
     
-    // Añadir el event listener apropiado
+    // Añadir un solo listener según el modo
+    let eventHandler;
     switch(currentMode) {
         case 'random':
-            newStartButton.addEventListener('click', generateRandomWord);
+            eventHandler = generateRandomWord;
             console.log('Modo aleatorio activado');
             break;
         case 'manual':
-            newStartButton.addEventListener('click', setManualWord);
+            eventHandler = setManualWord;
             console.log('Modo manual activado');
             break;
         case 'text':
         case 'choice':
-            newStartButton.addEventListener('click', initializeGame);
+            eventHandler = initializeGame;
             console.log(`Modo ${currentMode} activado`);
             break;
         default:
             console.warn('Modo de respuesta desconocido:', currentMode);
+            return;
+    }
+    
+    // Añadir el nuevo event listener
+    if (eventHandler) {
+        updatedButton.addEventListener('click', eventHandler, { once: false });
     }
 }
 
-// Asegurarnos de que todo el DOM esté cargado antes de añadir los event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    // Verificar que tenemos todos los elementos necesarios
+// Inicialización - asegurarnos de que solo se ejecute una vez
+let initialized = false;
+
+function initialize() {
+    if (initialized) return;
+    
     if (!startButton || !answerModeSelect) {
         console.error('No se pudieron encontrar todos los elementos necesarios');
         return;
     }
 
-    // Inicializar el listener correcto
-    updateStartButtonListener();
-
-    // Añadir el event listener para el cambio de modo
-    answerModeSelect.addEventListener('change', function() {
+    // Configurar el event listener para cambios en el modo
+    answerModeSelect.addEventListener('change', () => {
         updateStartButtonListener();
         handleWordChoice();
     });
-});
 
-// Add event listener to the answer mode select to update the button when changed
-answerModeSelect.addEventListener('change', function() {
+    // Configuración inicial
     updateStartButtonListener();
-    handleWordChoice();
-});
+    
+    initialized = true;
+}
 
-// Initialize the correct event listener when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    updateStartButtonListener();
-});
+// Asegurarnos de que todo se inicialice una sola vez cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize);
+} else {
+    initialize();
+}
 
 // Manejador que cambia el comportamiento del botón de inicio dependiendo de la opción seleccionada
 function handleWordChoice() {
