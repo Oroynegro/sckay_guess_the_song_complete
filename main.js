@@ -542,6 +542,11 @@ function ocultarLevel() {
         playlistSelection.style.display='none'
         languageSelectContainer.style.display='none'
         minWordsContainer.style.display='none'
+        textOption.style.display = 'block';
+        choiceOption.style.display = 'block';
+        randomOption.style.display = 'none';
+        manualOption.style.display = 'none';
+        answerModeSelect.value = 'artist';
         
         const levelSelect = document.querySelector(".level-select");
         if (levelSelect) {
@@ -574,6 +579,12 @@ function ocultarLevel() {
         playlistSelection.style.display='none'
         languageSelectContainer.style.display='none'
         minWordsContainer.style.display='none'
+        textOption.style.display = 'block';
+        choiceOption.style.display = 'block';
+        randomOption.style.display = 'none';
+        manualOption.style.display = 'none';
+        answerModeSelect.value = 'artist';
+
         // Si es adivina la "song"
         const levelSelect = document.querySelector(".level-select");
         if (levelSelect) {
@@ -590,8 +601,8 @@ function ocultarLevel() {
         
         textOption.style.display = 'none';
         choiceOption.style.display = 'none';
-        randomOption.style.display = 'flex';
-        manualOption.style.display = 'flex';
+        randomOption.style.display = 'block';
+        manualOption.style.display = 'block';
 
         levelSelectContainer.style.display='none'
         roundsSelectContainer.style.display='none'
@@ -600,6 +611,7 @@ function ocultarLevel() {
         playlistSelection.style.display='none'
         languageSelectContainer.style.display='flex'
         minWordsContainer.style.display='flex'
+        answerModeSelect.value = 'random';
     }
 }
 
