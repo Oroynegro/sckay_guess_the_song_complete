@@ -160,9 +160,13 @@ answerModeSelect.addEventListener('change', handleWordChoice);
 
 // Manejador que cambia el comportamiento del botón de inicio dependiendo de la opción seleccionada
 function handleWordChoice() {
-    const choice = answerModeSelect.value;
-
-    if (choice === 'manual') {
+    if (answerModeSelectValue ==='text'|| answerModeSelectValue ==='choice'){
+        startButton.removeEventListener('click', setManualWord)
+        startButton.removeEventListener('click', generateRandomWord)
+        startButton.addEventListener('click', initializeGame)
+        console.log("3")
+    }
+    else if (answerModeSelectValue === 'manual') {
         manualWordInput.style.display = 'flex'; // Mostrar el input de palabra manual
         lyricsInput.style.display = 'none'; // Ocultar el input de letras
         checkButtonLyric.style.display = 'none'; // Ocultar el botón de comprobar letra
@@ -173,7 +177,7 @@ function handleWordChoice() {
         startButton.removeEventListener('click', generateRandomWord);
         startButton.addEventListener('click', setManualWord);
         console.log("1")
-    } else if (choice === 'random'){
+    } else if (answerModeSelectValue === 'random'){
         manualWordInput.style.display = 'none'; // Ocultar el input de palabra manual
         languageSelectContainer.style.display = 'flex';
 
@@ -181,11 +185,6 @@ function handleWordChoice() {
         startButton.removeEventListener('click', setManualWord);
         startButton.addEventListener('click', generateRandomWord);
         console.log("2")
-    } else {
-        startButton.removeEventListener('click', setManualWord)
-        startButton.removeEventListener('click', generateRandomWord)
-        startButton.addEventListener('click', initializeGame)
-        console.log("3")
     }
 }
 
