@@ -87,6 +87,7 @@ fullscreenBtn.addEventListener("click", () => {
 });
 
 function updateGameInfo() {
+    console.log('updateGAmeInfo')
     // Actualiza la ronda actual y el total
     document.getElementById("currentRound").textContent = gameConfig.currentRound;
     document.getElementById("totalRounds").textContent = gameConfig.rounds;
@@ -139,6 +140,7 @@ window.addEventListener('load', loadWords);
 
 // Función para generar palabra aleatoria
 function generateRandomWord() {
+    console.log('updateGAmeInfo')
     // Llama a esta función después de cualquier cambio en gameConfig
 updateGameInfo();
     const selectedLanguage = languageSelect.value;
@@ -164,6 +166,7 @@ updateGameInfo();
 }
 
 function updateLyricMode(mode) {
+    console.log('updateLyricMode')
     // Limpiar estados previos
     wordDisplay.textContent = mode === 'manual' ? 'Escribe una palabra' : '';
     lyricsInput.value = '';
@@ -195,6 +198,7 @@ answerModeSelect.addEventListener('change', function(e) {
 
 // Modificar la función setManualWord
 function setManualWord() {
+    console.log('setManualWord')
     // Llama a esta función después de cualquier cambio en gameConfig
 updateGameInfo();
     const manualWord = manualWordInputField.value.trim();
@@ -237,6 +241,7 @@ updateGameInfo();
 
 // Configurar la UI del juego de lírica
 function setupLyricGameUI() {
+    console.log('setupLyricGameUi')
     wordDisplay.textContent = currentWord.toUpperCase();
     lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
     
@@ -260,6 +265,7 @@ function setupLyricGameUI() {
 
 // Función para verificar las letras
 async function checkLyrics() {
+    console.log('checkLyrics')
     const normalizeText = (text) =>
         text.toLowerCase()
             .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '') // Elimina puntuación
@@ -321,6 +327,7 @@ async function checkLyrics() {
 
 // Función para mostrar el resultado
 function showResultLyric(message, isSuccess, data) {
+    console.log('showResultLyric')
     resultLyric.innerHTML = '';
 
     if (isSuccess) {
@@ -356,6 +363,7 @@ function showResultLyric(message, isSuccess, data) {
 
 // Función para inicializar el modo lírico
 function initializeLyricMode() {
+    console.log('InitializeLyricMode')
     // Actualizar la configuración del juego
     gameConfig.mode = "single";
     gameConfig.category = "lyric";
@@ -411,6 +419,7 @@ document.getElementById("gameCategory").addEventListener("change", function(e) {
 
 // Actualizar la función del botón de inicio
 function updateStartButtonListener() {
+    console.log('updateStartButtonListener')
     if (!startButton) {
         console.error('No se encontró el botón de inicio');
         return;
@@ -449,6 +458,7 @@ document.getElementById("answerMode").addEventListener('change', updateStartButt
 let initialized = false;
 
 function initialize() {
+    console.log('Initialize')
     if (initialized) return;
     
     if (!startButton || !answerModeSelect) {
@@ -476,6 +486,7 @@ if (document.readyState === 'loading') {
 
 
 async function checkLyrics() {
+    console.log('checkLyrics')
     const normalizeText = (text) =>
         text.toLowerCase()
             .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '') // Elimina puntuación
@@ -536,6 +547,7 @@ async function checkLyrics() {
 }
 
 function showResultLyric(message, isSuccess, data) {
+    console.log('showResultLyric')
     resultLyric.innerHTML = ''; // Limpiar contenido previo
 
     if (isSuccess) {
@@ -573,6 +585,7 @@ function showResultLyric(message, isSuccess, data) {
 
 // Función para generar opciones múltiples
 async function generateMultipleChoiceOptions(correctTrack, allTracks) {
+    console.log('generateMultipleChoiceOptions')
     const options = new Set();
     const correctOption =
         gameConfig.category === "song"
@@ -611,6 +624,7 @@ async function generateMultipleChoiceOptions(correctTrack, allTracks) {
 }
 // Función para mezclar array
 function shuffleArray(array) {
+    console.log('shuffleArray')
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
@@ -622,6 +636,7 @@ document
     .getElementById("selectionType")
     .addEventListener("change", selectionTypeChange);
 function selectionTypeChange(e) {
+    console.log('selectionTypeChange')
     if (e.target.value === "artist") {
         document.getElementById("playlistSelection").style.display = "none";
         document.getElementById("artistSelection").style.display = "block";
@@ -637,6 +652,7 @@ const artistTracksCache = {}; // Caché para almacenar canciones por artista y d
 const loadingPromises = {};
 
 async function getTracksByArtist(artistName, isFirstRound = true) {
+    console.log('getTrackByArtist')
     if (!accessToken) {
         accessToken = await getAccessToken();
     }
@@ -771,6 +787,7 @@ document
     .addEventListener("change", ocultarLevel, selectionTypeChange);
 
 function ocultarLevel() {
+    console.log('uocultarLevel')
     const gameCategory = document.querySelector("#gameCategory");
     const selectionTypeComprobation = document.querySelector("#selectionType");
 
@@ -879,6 +896,7 @@ document.getElementById("roundsNumber").addEventListener("input", function () {
 
 // Función para actualizar el valor máximo basado en modo y dificultad
 function actualizarMaximo() {
+    console.log('actualizarMaximo')
     console.log(
         "Valor difficultySelect:",
         document.getElementById("difficultySelect").value
@@ -908,6 +926,7 @@ function actualizarMaximo() {
 
 // Modificar la función initializeGame para incluir el modo de respuesta
 function initializeGame() {
+    console.log('initializeGame')
     const gameCategory = document.querySelector("#gameCategory");
     
     // Update configuration
@@ -960,6 +979,7 @@ function initializeGame() {
 
 // Función para configurar la UI según el modo de respuesta
 function setupAnswerMode() {
+    console.log('setUpAnswerMode')
     const guessContainer = document.querySelector(".guess-container");
     if (gameConfig.answerMode === "choice") {
         guessContainer.innerHTML = `
@@ -988,6 +1008,7 @@ document.getElementById("gameMode").addEventListener("change", function (e) {
 });
 
 async function getAccessToken() {
+    console.log('getAccessToken')
     try {
         const response = await fetch("/api/getAccessToken");
         const data = await response.json();
@@ -1038,6 +1059,7 @@ async function getRandomTrack() {
 }
 
 function updatePlayer(trackId) {
+    console.log('updatePlayer')
     return new Promise((resolve) => {
         const playerContainer = document.getElementById("playerContainer");
         let iframe = document.querySelector("#playerContainer .i-frame");
@@ -1073,6 +1095,7 @@ function updatePlayer(trackId) {
     });
 }
 function normalizeString(str) {
+    console.log('normalizeString')
     return str
         .toLowerCase()
         .normalize("NFD")
@@ -1080,6 +1103,7 @@ function normalizeString(str) {
 }
 
 function checkGuess(isTimeOut = false) {
+    console.log('checkGuess')
     const guess = normalizeString(
         document.getElementById("guessInput").value.trim()
     );
@@ -1126,6 +1150,7 @@ function checkGuess(isTimeOut = false) {
 let timeLeft = 25; // Tiempo inicial del temporizador
 
 function endRound(isCorrect, selectedOption = "") {
+    console.log('endRound')
     const guessInputShow =
         gameConfig.answerMode === "text"
             ? (document.getElementById("guessInput")?.value || "").trim()
@@ -1214,6 +1239,7 @@ function endRound(isCorrect, selectedOption = "") {
 }
 
 function nextRound() {
+    console.log('nextRound')
     if (gameConfig.mode === "multi") {
         gameConfig.currentPlayer =
             gameConfig.currentPlayer === "player1" ? "player2" : "player1";
@@ -1244,6 +1270,7 @@ function nextRound() {
 }
 
 function updateScores() {
+    console.log('updateScores')
     document.getElementById("player1Score").innerHTML = `
         <div class="player-info">
             <span class="player-name">${gameConfig.players.player1.name}</span><span class="separator-1">:</span> <span class="score">${gameConfig.players.player1.score}</span><span class="emoji"><img src="svg/points.svg" alt="puntos" class="svg-points"/></span>
@@ -1266,6 +1293,7 @@ function updateScores() {
 }
 
 function updateCurrentPlayer() {
+    console.log('updateCurrentPlayer')
     const currentPlayerElement = document.getElementById("currentPlayer");
 
     // Crear el nuevo h2 con la clase 'current-player'
@@ -1287,6 +1315,7 @@ function updateCurrentPlayer() {
 }
 
 async function takeScreenshot() {
+    console.log('takeScreenshot')
     try {
         const finalResults = document.getElementById("finalResults");
 
@@ -1350,6 +1379,7 @@ async function takeScreenshot() {
 
 // Función para precargar imagen
 function preloadImage(url) {
+    console.log('perloadImage')
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.src = url;
@@ -1360,6 +1390,7 @@ function preloadImage(url) {
 
 // Función para actualizar la imagen con fade
 async function updateContentImage(imageUrl) {
+    console.log('updateContentImage')
     const container = document.querySelector(".content-thumbnail-container");
     const img = document.getElementById("contentImage");
 
@@ -1386,6 +1417,7 @@ async function updateContentImage(imageUrl) {
 
 // Modificar la función showFinalResults para incluir el botón de captura
 async function showFinalResults() {
+    console.log('showFinalResults')
     // Ocultar área de juego
     document.getElementById("gameArea").style.display = "none";
 
@@ -1512,17 +1544,20 @@ async function showFinalResults() {
 }
 
 function updateGameStatus(message, status) {
+    console.log('updateGAmeStatus')
     const gameStatus = document.getElementById("gameStatus");
     gameStatus.innerHTML = message; // Cambiamos textContent a innerHTML
     gameStatus.className = `game-status ${status}`;
 }
 
 function displaySongInfo() {
+    console.log('DispleySongInfo')
     document.getElementById("playInstruction").style.display = "none";
 }
 
 // Función para buscar artistas
 async function searchArtists(query) {
+    console.log('searchArtists')
     if (!accessToken) {
         accessToken = await getAccessToken();
     }
@@ -1552,6 +1587,7 @@ async function searchArtists(query) {
 
 // Función para mostrar los resultados de la búsqueda de artistas
 function displayArtistResults(artists) {
+    console.log('displayArtistResults')
     const resultsContainer = document.getElementById("artistSearchResults");
     resultsContainer.innerHTML = "";
 
@@ -1604,6 +1640,7 @@ function displayArtistResults(artists) {
 
 // Función para inicializar la búsqueda de artistas
 function initializeArtistSearch() {
+    console.log('initializeArtistSearch')
     const artistInput = document.getElementById("artistNameInput");
     if (!artistInput) {
         console.error("No se encontró el elemento artistNameInput");
@@ -1644,6 +1681,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Función para extraer el ID de la playlist
 function extractPlaylistId(input) {
+    console.log('extractPlaylistId')
     // Si el input está vacío, retornar el ID por defecto
     if (!input) return "2TieOXUFdPe8OrB8WYgKJy";
 
@@ -1663,6 +1701,7 @@ function extractPlaylistId(input) {
 
 // Función para mostrar los resultados de la búsqueda con manejo de datos faltantes
 function displayPlaylistResults(playlists) {
+    console.log('displayListResults')
     const resultsContainer = document.getElementById("playlistSearchResults");
     resultsContainer.innerHTML = "";
 
@@ -1716,6 +1755,7 @@ function displayPlaylistResults(playlists) {
 
 // Función para buscar playlists con mejor manejo de errores
 async function searchPlaylists(query) {
+    console.log('searchPlaylists')
     if (!accessToken) {
         try {
             accessToken = await getAccessToken();
@@ -1757,6 +1797,7 @@ async function searchPlaylists(query) {
 }
 
 function initializePlaylistSearch() {
+    console.log('initializePlaylistSearch')
     // Insertar el HTML de búsqueda después del input de playlist existente
     const playlistInput = document.getElementById("playlistIdInput");
     if (!playlistInput) {
@@ -1805,6 +1846,7 @@ document.addEventListener("DOMContentLoaded", initializePlaylistSearch);
 
 // Modificar la función newGame para manejar las opciones múltiples
 async function newGame() {
+    console.log('newGame')
     resetGameUI();
     updateGameStatus("Cargando nueva canción...");
 
@@ -1887,11 +1929,13 @@ async function newGame() {
 }
 // Function to escape special characters for use in onclick handlers
 function escapeString(str) {
+    console.log('scapeString')
     return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
 }
 
 // Update the displayMultipleChoiceOptions function
 function displayMultipleChoiceOptions(options) {
+    console.log('displayMultipleChoiceOptions')
     const optionsGrid = document.querySelector(".options-grid");
     optionsGrid.innerHTML = options
         .map((option) => {
@@ -1910,12 +1954,14 @@ function displayMultipleChoiceOptions(options) {
 
 // Función para habilitar los botones de opciones
 function enableMultipleChoiceButtons() {
+    console.log('enableMultipleChoiceButtons')
     const buttons = document.querySelectorAll(".option-button");
     buttons.forEach((button) => (button.disabled = false));
 }
 
 // Función para verificar respuesta en modo de opciones múltiples
 function checkMultipleChoiceGuess(selectedOption) {
+    console.log('checkMulpleChoiceGuess')
     const correctAnswer =
         gameConfig.category === "song"
             ? cleanString(currentTrack.name)
@@ -1955,11 +2001,13 @@ function checkMultipleChoiceGuess(selectedOption) {
 }
 
 function resetArtistTracks() {
+    console.log('resetArtistTracks')
     allTracks = []; // Limpiar las canciones almacenadas
 }
 
 // Actualizar la función de startTimer (mantener la versión modificada anterior)
 function startTimer() {
+    console.log('startTimer')
     const timer = document.getElementById("timer");
     timeLeft = 25;
     timer.textContent = timeLeft;
@@ -1983,10 +2031,12 @@ function startTimer() {
 }
 
 function resetGameUI() {
+    console.log('resetGameUI')
     document.getElementById("playInstruction").style.display = "flex";
 }
 
 function resetGame() {
+    console.log('resetGame')
     document.getElementById("gameConfig").style.display = "block";
     document.getElementById("gameArea").style.display = "none";
     document.getElementById("finalResults").style.display = "none";
