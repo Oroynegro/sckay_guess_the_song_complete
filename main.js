@@ -365,16 +365,15 @@ function showResultLyric(message, isSuccess, data) {
 function initializeLyricMode() {
     console.log('InitializeLyricMode')
     // Actualizar la configuración del juego
+    updateGameInfo();
     gameConfig.mode = "single";
     gameConfig.category = "lyric";
     gameConfig.answerMode = document.getElementById("answerMode").value;
-    console.log('1')
     
     // Configurar la UI según el modo de respuesta
     if (gameConfig.answerMode === "random") {
         manualWordInput.style.display = 'none';
         languageSelectContainer.style.display = 'flex';
-    console.log('2')
 
     } else if (gameConfig.answerMode === "manual") {
         manualWordInput.style.display = 'flex';
@@ -927,6 +926,7 @@ function actualizarMaximo() {
 // Modificar la función initializeGame para incluir el modo de respuesta
 function initializeGame() {
     console.log('initializeGame')
+    updateGameInfo();
     const gameCategory = document.querySelector("#gameCategory");
     
     // Update configuration
