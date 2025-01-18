@@ -171,6 +171,8 @@ function setManualWord() {
     lyricsInput.value = '';
     resultLyric.style.display = 'none';
     manualWordInput.style.display = 'none';
+    gameAreaSongArtist.style.display = 'none'
+    gameAreaLyric.style.display ='flex'
     
     // Asegurar que el modo manual esté activo
     document.getElementById("answerMode").value = 'manual';
