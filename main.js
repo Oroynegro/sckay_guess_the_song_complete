@@ -854,59 +854,53 @@ function actualizarMaximo() {
 // Modificar la función initializeGame para incluir el modo de respuesta
 function initializeGame() {
     const gameCategory = document.querySelector("#gameCategory");
-    if (gameCategory.value === "artist") {
-        document.getElementById("subtitle").textContent = "GUESS THE ARTIST";
-    }
-
-    const roundsInput = document.getElementById("roundsNumber").value;
-    const rounds = parseInt(roundsInput);
-
-    if (isNaN(rounds) || rounds <= 0) {
-        updateGameStatus(
-            "Por favor, introduce un número válido de rondas.",
-            "error"
-        );
-        return;
-    }
-
+    
+    // Update configuration
     gameConfig.mode = document.getElementById("gameMode").value;
-    gameConfig.rounds = rounds;
+    gameConfig.rounds = parseInt(document.getElementById("roundsNumber").value);
     gameConfig.currentRound = 1;
     gameConfig.usedTracks.clear();
-    gameConfig.players.player1.score = 0;
-    gameConfig.players.player2.score = 0;
-    gameConfig.currentPlayer = "player1";
-    gameConfig.totalRounds = gameConfig.mode === "multi" ? rounds * 2 : rounds;
-    gameConfig.category = document.getElementById("gameCategory").value;
-    gameConfig.answerMode = document.getElementById("answerMode").value; // Nuevo
+    gameConfig.category = gameCategory.value;
+    gameConfig.answerMode = document.getElementById("answerMode").value;
 
-    // Configurar la UI según el modo de respuesta
-    setupAnswerMode();
-
-    if (gameConfig.mode === "multi") {
-        gameConfig.players.player1.name =
-            document.getElementById("player1").value || "Jugador 1";
-        gameConfig.players.player2.name =
-            document.getElementById("player2").value || "Jugador 2";
-        document.getElementById("player2Score").style.display = "block";
-    } else {
-        gameConfig.players.player1.name =
-            document.getElementById("player1").value || "Jugador 1";
-        document.getElementById("player2Score").style.display = "none";
-    }
-
+    // Hide configuration screen
     document.getElementById("gameConfig").style.display = "none";
-    document.getElementById("gameArea").style.display = "block";
-    document.getElementById("gameAreaSongArtist").style.display = "block";
-    document.getElementById("playInstruction").style.display = "block";
-    document.getElementById("gameAreaLyric").style.display = "none";
-    document.getElementById("currentRound").textContent =
-        gameConfig.currentRound;
-    document.getElementById("totalRounds").textContent = gameConfig.rounds;
-    updateScores();
-    updateCurrentPlayer();
 
-    newGame();
+    if (gameConfig.category === "lyric") {
+        // Lyric mode specific setup
+        document.getElementById("gameArea").style.display = "block";
+        document.getElementById("gameAreaSongArtist").style.display = "none";
+        document.getElementById("gameAreaLyric").style.display = "flex";
+        document.getElementById("playInstruction").style.display = "none";
+        document.getElementById("playerContainer").style.display = "none"; // Hide Spotify player
+        
+        // Initialize lyric mode
+        initializeLyricMode();
+    } else {
+        // Song/Artist mode setup
+        document.getElementById("gameArea").style.display = "block";
+        document.getElementById("gameAreaSongArtist").style.display = "block";
+        document.getElementById("gameAreaLyric").style.display = "none";
+        document.getElementById("playInstruction").style.display = "block";
+        document.getElementById("playerContainer").style.display = "block"; // Show Spotify player
+        
+        // Setup multiplayer if needed
+        if (gameConfig.mode === "multi") {
+            gameConfig.players.player1.name = document.getElementById("player1").value || "Jugador 1";
+            gameConfig.players.player2.name = document.getElementById("player2").value || "Jugador 2";
+            document.getElementById("player2Score").style.display = "block";
+        } else {
+            gameConfig.players.player1.name = document.getElementById("player1").value || "Jugador 1";
+            document.getElementById("player2Score").style.display = "none";
+        }
+
+        // Update UI elements
+        document.getElementById("currentRound").textContent = gameConfig.currentRound;
+        document.getElementById("totalRounds").textContent = gameConfig.rounds;
+        updateScores();
+        updateCurrentPlayer();
+        newGame();
+    }
 }
 
 // Función para configurar la UI según el modo de respuesta
