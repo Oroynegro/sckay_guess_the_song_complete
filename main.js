@@ -85,6 +85,34 @@ fullscreenBtn.addEventListener("click", () => {
         }
     }
 });
+
+function updateGameInfo() {
+    // Actualiza la ronda actual y el total
+    document.getElementById("currentRound").textContent = gameConfig.currentRound;
+    document.getElementById("totalRounds").textContent = gameConfig.rounds;
+
+    // Actualiza información del jugador 1
+    document.getElementById("player1Name").textContent = gameConfig.players.player1.name;
+    document.getElementById("player1ScoreValue").textContent = gameConfig.players.player1.score;
+    document.getElementById("player1CorrectAnswers").textContent = gameConfig.players.player1.correctAnswers;
+    document.getElementById("player1TotalRounds").textContent = gameConfig.rounds;
+
+    // Actualiza información del jugador 2
+    document.getElementById("player2Name").textContent = gameConfig.players.player2.name;
+    document.getElementById("player2ScoreValue").textContent = gameConfig.players.player2.score;
+    document.getElementById("player2CorrectAnswers").textContent = gameConfig.players.player2.correctAnswers;
+    document.getElementById("player2TotalRounds").textContent = gameConfig.rounds;
+
+    // Muestra u oculta la puntuación del jugador 2 según el modo
+    const player2ScoreContainer = document.getElementById("player2Score");
+    player2ScoreContainer.style.display = gameConfig.mode === "multi" ? "block" : "none";
+
+    // Actualiza el jugador actual
+    document.getElementById("currentPlayer").textContent =
+        `Turno de: ${gameConfig.players[gameConfig.currentPlayer].name}`;
+}
+
+
 let currentWord = '';
 let palabras = { espanol: [], ingles: [] };  // Inicializamos un objeto para las palabras en ambos idiomas
 
@@ -111,6 +139,8 @@ window.addEventListener('load', loadWords);
 
 // Función para generar palabra aleatoria
 function generateRandomWord() {
+    // Llama a esta función después de cualquier cambio en gameConfig
+updateGameInfo();
     const selectedLanguage = languageSelect.value;
     
     if (palabras[selectedLanguage].length === 0) {
@@ -165,6 +195,8 @@ answerModeSelect.addEventListener('change', function(e) {
 
 // Modificar la función setManualWord
 function setManualWord() {
+    // Llama a esta función después de cualquier cambio en gameConfig
+updateGameInfo();
     const manualWord = manualWordInputField.value.trim();
     if (!manualWord) {
         console.error("Por favor, ingresa una palabra válida.");

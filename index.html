@@ -167,34 +167,37 @@
             <div id="gameArea" class="game-container" style="display: none">
                 <div id="gameInfo">
                     <div class="current-round">
-                        Ronda: <span id="currentRound">1</span>/<span
-                            id="totalRounds"
-                            >5</span
-                        >
+                        Ronda: <span id="currentRound">1</span>/<span id="totalRounds">5</span>
                     </div>
                     <div id="player1Score" class="score-container">
                         <div class="player-info">
-                            <span class="player-name"
-                                >${gameConfig.players.player1.name}</span
-                            >
+                            <span class="player-name" id="player1Name">Jugador 1</span>
                             <span class="separator-1">:</span>
-                            <span class="score"
-                                >${gameConfig.players.player1.score}</span
-                            >
-                            <span class="emoji"
-                                ><img src="svg/points.svg" alt="puntos"
-                            /></span>
+                            <span class="score" id="player1ScoreValue">0</span>
+                            <span class="emoji"><img src="svg/points.svg" alt="puntos" /></span>
                         </div>
                         <div class="player-stats">
-                            <span class="correct-answer"
-                                >${gameConfig.players.player1.correctAnswers}</span
-                            >
+                            <span class="correct-answer" id="player1CorrectAnswers">0</span>
                             <span class="separator-2">/</span>
-                            <span class="total-rounds"
-                                >${gameConfig.rounds}</span
-                            >
+                            <span class="total-rounds" id="player1TotalRounds">5</span>
                         </div>
                     </div>
+                    <div id="player2Score" class="score-container">
+                        <div class="player-info">
+                            <span class="player-name" id="player2Name">Jugador 2</span>
+                            <span class="separator-1">:</span>
+                            <span class="score" id="player2ScoreValue">0</span>
+                            <span class="emoji"><img src="svg/points.svg" alt="puntos" /></span>
+                        </div>
+                        <div class="player-stats">
+                            <span class="correct-answer" id="player2CorrectAnswers">0</span>
+                            <span class="separator-2">/</span>
+                            <span class="total-rounds" id="player2TotalRounds">5</span>
+                        </div>
+                    </div>
+                    <div id="currentPlayer"></div>
+                </div>
+                
 
                     <div id="player2Score" class="score-container">
                         <div class="player-info">
