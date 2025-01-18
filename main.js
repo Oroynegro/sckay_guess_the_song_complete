@@ -992,6 +992,10 @@ function setupAnswerMode() {
             overlay.style.backgroundColor = "#282828";
             overlay.style.borderRadius = "0";
         }
+        const songInfo = document.querySelector(".song-info");
+        if (songInfo) {
+            songInfo.style.marginTop = "90px";
+        }
 
     } else {
         guessContainer.innerHTML = `
@@ -1553,6 +1557,12 @@ function updateGameStatus(message, status) {
 function displaySongInfo() {
     console.log('DispleySongInfo')
     document.getElementById("playInstruction").style.display = "none";
+    const songInfo = document.getElementById("songInfo");
+    songInfo.innerHTML = `
+            <p><strong>Canción:</strong> ${currentTrack.name}</p>
+            <p><strong>Artista:</strong> ${currentTrack.artists[0].name}</p>
+        `;
+    document.getElementById("answerContainer").style.display = "block";
 }
 
 // Función para buscar artistas
@@ -2031,12 +2041,12 @@ function startTimer() {
 }
 
 function resetGameUI() {
-    console.log('resetGameUI')
+    document.getElementById("answerContainer").style.display = "none";
     document.getElementById("playInstruction").style.display = "flex";
+    document.getElementById("songInfo").innerHTML = "";
 }
 
 function resetGame() {
-    console.log('resetGame')
     document.getElementById("gameConfig").style.display = "block";
     document.getElementById("gameArea").style.display = "none";
     document.getElementById("finalResults").style.display = "none";

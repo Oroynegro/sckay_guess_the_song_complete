@@ -40,8 +40,7 @@
             <div id="gameConfig" class="game-config">
                 <h2>Configuración del Juego</h2>
                 <div class="config-options">
-                    
-                    <div id="modeSelectContainer">
+                    <div class="mode-select">
                         <label for="gameMode">Modo de Juego:</label>
                         <select id="gameMode">
                             <option value="single">1 Jugador</option>
@@ -71,7 +70,7 @@
                             maxlength="8"
                         />
                     </div>
-                    <div id="categorySelectContainer">
+                    <div class="category-select">
                         <label for="gameCategory">Categoría:</label>
                         <select id="gameCategory">
                             <option value="song" id="guessTheSong">
@@ -80,30 +79,24 @@
                             <option value="artist" id="guessTheArtist">
                                 Adivina el Artista
                             </option>
-                            <option value="lyric" id="guessTheLyric">
-                                Adivina la letra
-                            </option>
                         </select>
                     </div>
-                    
-                    <div id="levelSelectContainer">
+                    <div class="level-select">
                         <label for="difficultySelect">Nivel:</label>
                         <select id="difficultySelect">
                             <option value="normal">Top 10</option>
                             <option value="extreme">Todas las canciones</option>
                         </select>
                     </div>
-                    <div id="answerModeSelectContainer">
+                    <div class="answer-mode-select">
                         <label for="answerMode">Modo:</label>
                         <select id="answerMode">
-                            <option id="textOption" value="text">Escribir respuesta</option>
-                            <option id="choiceOption" value="choice">Opciones múltiples</option>
-                            <option id="randomOption" value="random" style="display:none;">Generar palabra</option>
-                            <option id="manualOption" value="manual" style="display: none;">Escribir palabra</option>
+                            <option value="text">Escribir respuesta</option>
+                            <option value="choice">Opciones múltiples</option>
                         </select>
                     </div>
 
-                    <div id="roundsSelectContainer">
+                    <div class="rounds-select">
                         <label for="roundsNumber">Número de rondas:</label>
                         <input
                             type="number"
@@ -114,7 +107,7 @@
                         />
                     </div>
 
-                    <div id="selectionTypeSelectContainer">
+                    <div class="selection-type-select">
                         <label for="selectionType">Seleccionar por:</label>
                         <select id="selectionType">
                             <option value="artist">Artista</option>
@@ -141,23 +134,7 @@
                         />
                     </div>
 
-                    <div id="languageSelectContainer" style="display: none;">
-                        <label for="languageSelect">Idioma:</label>
-                        <select id="languageSelect">
-                            <option value="espanol">Español</option>
-                            <option value="ingles">Inglés</option>
-                        </select>
-                    </div>
-                    <div id="minWordsContainer" style="display: none;">
-                        <label for="minWords">Número de palabras consecutivas:</label>
-                        <input id="minWords" type="number" value="3" min="3" max="100"></input>
-                    </div>
-    
-                    <div id="manualWordInput" style="display:none;">
-                        <input type="text" id="manualWord" placeholder="Escribe tu palabra">
-                    </div>
-
-                    <button id="startButton">
+                    <button id="startGameBtn" onclick="initializeGame()">
                         ¡Comenzar Juego!
                     </button>
                 </div>
@@ -165,39 +142,36 @@
 
             <!-- Área de juego -->
             <div id="gameArea" class="game-container" style="display: none">
-                <div id="gameInfo">
+                <div class="game-info">
                     <div class="current-round">
-                        Ronda: <span id="currentRound">1</span>/<span id="totalRounds">5</span>
+                        Ronda: <span id="currentRound">1</span>/<span
+                            id="totalRounds"
+                            >5</span
+                        >
                     </div>
                     <div id="player1Score" class="score-container">
                         <div class="player-info">
-                            <span class="player-name" id="player1Name">Jugador 1</span>
+                            <span class="player-name"
+                                >${gameConfig.players.player1.name}</span
+                            >
                             <span class="separator-1">:</span>
-                            <span class="score" id="player1ScoreValue">0</span>
-                            <span class="emoji"><img src="svg/points.svg" alt="puntos" /></span>
+                            <span class="score"
+                                >${gameConfig.players.player1.score}</span
+                            >
+                            <span class="emoji"
+                                ><img src="svg/points.svg" alt="puntos"
+                            /></span>
                         </div>
                         <div class="player-stats">
-                            <span class="correct-answer" id="player1CorrectAnswers">0</span>
+                            <span class="correct-answer"
+                                >${gameConfig.players.player1.correctAnswers}</span
+                            >
                             <span class="separator-2">/</span>
-                            <span class="total-rounds" id="player1TotalRounds">5</span>
+                            <span class="total-rounds"
+                                >${gameConfig.rounds}</span
+                            >
                         </div>
                     </div>
-                    <div id="player2Score" class="score-container">
-                        <div class="player-info">
-                            <span class="player-name" id="player2Name">Jugador 2</span>
-                            <span class="separator-1">:</span>
-                            <span class="score" id="player2ScoreValue">0</span>
-                            <span class="emoji"><img src="svg/points.svg" alt="puntos" /></span>
-                        </div>
-                        <div class="player-stats">
-                            <span class="correct-answer" id="player2CorrectAnswers">0</span>
-                            <span class="separator-2">/</span>
-                            <span class="total-rounds" id="player2TotalRounds">5</span>
-                        </div>
-                    </div>
-                    <div id="currentPlayer"></div>
-                </div>
-                
 
                     <div id="player2Score" class="score-container">
                         <div class="player-info">
@@ -231,9 +205,8 @@
                 </div>
 
                 <div class="timer" id="timer">25</div>
-                
 
-                <div class="player-container-container" id="gameAreaSongArtist" style="display: none;">
+                <div class="player-container-container">
                     <div id="playerContainer" class="player-container"></div>
                     <div class="overlay">
                         <div class="guess-container">
@@ -255,20 +228,16 @@
                     </div>
                     <div class="overlay-2"></div>
                 </div>
-                <!-- Nueva flecha con texto -->
-                <div class="play-instruction" id="playInstruction">
+                 <!-- Nueva flecha con texto -->
+                 <div class="play-instruction" id="playInstruction">
                     <div class="arrow">
                         <img class="arrow" src="svg/arrow.svg" alt="" />
                     </div>
                     <span>Play</span>
-            </div>
-        
-                <div id="gameAreaLyric" style="display: none;">
-                    <div id="wordDisplay" class="word-display"></div>
-                <textarea id="lyricsInput" placeholder="" style="display: none;"></textarea>
-                <button id="checkButtonLyric">Verificar Letra</button>
-                <div id="loading" class="loading" style="display: none;">Verificando...</div>
-                <div id="resultLyric" class="result"></div>
+                </div>
+
+                <div class="answer-container" id="answerContainer">
+                    <div class="song-info" id="songInfo"></div>
                 </div>
             </div>
 
