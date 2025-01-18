@@ -122,12 +122,49 @@ function generateRandomWord() {
     setupLyricGameUI();
 }
 
-// Función para configurar palabra manual
+function updateLyricMode(mode) {
+    // Limpiar estados previos
+    wordDisplay.textContent = mode === 'manual' ? 'Escribe una palabra' : '';
+    lyricsInput.value = '';
+    manualWordInputField.value = '';
+    resultLyric.style.display = 'none';
+
+    if (mode === 'manual') {
+        // Configuración para modo manual
+        manualWordInput.style.display = 'flex';
+        languageSelectContainer.style.display = 'none';
+        lyricsInput.style.display = 'none';
+        checkButtonLyric.style.display = 'none';
+        startButton.style.display = 'block';
+    } else if (mode === 'random') {
+        // Configuración para modo aleatorio
+        manualWordInput.style.display = 'none';
+        languageSelectContainer.style.display = 'flex';
+        startButton.style.display = 'block';
+        lyricsInput.style.display = 'none';
+        checkButtonLyric.style.display = 'none';
+    }
+}
+
+// Actualizar el listener del modo de respuesta
+answerModeSelect.addEventListener('change', function(e) {
+    updateLyricMode(e.target.value);
+    updateStartButtonListener();
+});
+
+// Modificar la función setManualWord
 function setManualWord() {
     const manualWord = manualWordInputField.value.trim();
     if (manualWord) {
         currentWord = manualWord;
-        setupLyricGameUI();
+        wordDisplay.textContent = currentWord.toUpperCase();
+        lyricsInput.style.display = 'block';
+        checkButtonLyric.style.display = 'block';
+        startButton.style.display = 'none';
+        lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
+        lyricsInput.value = '';
+        resultLyric.style.display = 'none';
+        manualWordInput.style.display = 'none';
     }
 }
 
@@ -331,18 +368,9 @@ function updateStartButtonListener() {
         updatedButton.addEventListener('click', initializeGame);
     }
 }
-function lyricMode (){
-    if (gameConfig.answerModeSelectValue === 'random'){
-        manualWordInput.style.display ='flex';
-        languageSelectContainer.style.display = 'none';
-    } else if (gameConfig.answerModeSelectValue === 'manual'){
-        manualWordInput.style.display ='flex';
-        languageSelectContainer.style.display = 'none';
-    }
-}
 
 // Actualizar listener cuando cambia el modo de respuesta
-document.getElementById("answerMode").addEventListener('change', updateStartButtonListener, lyricMode);
+document.getElementById("answerMode").addEventListener('change', updateStartButtonListener);
 
 // Inicialización - asegurarnos de que solo se ejecute una vez
 let initialized = false;
