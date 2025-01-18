@@ -1275,25 +1275,7 @@ function nextRound() {
 
 function updateScores() {
     console.log('updateScores')
-    document.getElementById("player1Score").innerHTML = `
-        <div class="player-info">
-            <span class="player-name">${gameConfig.players.player1.name}</span><span class="separator-1">:</span> <span class="score">${gameConfig.players.player1.score}</span><span class="emoji"><img src="svg/points.svg" alt="puntos" class="svg-points"/></span>
-        </div>
-        <div class="player-stats">
-            <span class="correct-answer">${gameConfig.players.player1.correctAnswers}</span><span class="separator-2">/</span><span class="total-rounds">${gameConfig.currentRound}</span>
-        </div>
-    `;
-
-    if (gameConfig.mode === "multi") {
-        document.getElementById("player2Score").innerHTML = `
-        <div class="player-info">
-            <span class="player-name">${gameConfig.players.player2.name}</span><span class="separator-1">: </span><span class="score">${gameConfig.players.player2.score}</span><span class="emoji"><img src="svg/points.svg" alt="puntos" class="svg-points"/></span>
-        </div>
-        <div class="player-stats">
-            <span class="correct-answer">${gameConfig.players.player2.correctAnswers}</span><span class="separator-2">/</span><span class="total-rounds">${gameConfig.currentRound}</span>
-        </div>
-    `;
-    }
+    updateGameInfo()
 }
 
 function updateCurrentPlayer() {
