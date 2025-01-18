@@ -155,28 +155,20 @@ answerModeSelect.addEventListener('change', function(e) {
 // Modificar la función setManualWord
 function setManualWord() {
     const manualWord = manualWordInputField.value.trim();
-    if (!manualWord) {
-        console.error("Por favor, ingresa una palabra válida.");
-        return;
+    if (manualWord) {
+        currentWord = manualWord;
+        wordDisplay.textContent = `${currentWord.toUpperCase()}`;
+        lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
+        lyricsInput.style.display = 'block';
+        checkButtonLyric.style.display = 'block';
+        gameConfigContainer.style.display = 'none';
+        gameArea.style.display='block'
+        gameInfo.style.display='none'
+        gameAreaSongArtist.style.display = 'none'
+        playInstruction.style.display= 'none'
+        gameAreaLyric.style.display = 'flex'
+        
     }
-
-    currentWord = manualWord;
-    wordDisplay.textContent = currentWord.toUpperCase();
-
-    // Actualizar la UI
-    lyricsInput.style.display = 'block';
-    checkButtonLyric.style.display = 'block';
-    startButton.style.display = 'none';
-    lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
-    lyricsInput.value = '';
-    resultLyric.style.display = 'none';
-    manualWordInput.style.display = 'none';
-    gameAreaSongArtist.style.display = 'none'
-    gameAreaLyric.style.display ='flex'
-    
-    // Asegurar que el modo manual esté activo
-    document.getElementById("answerMode").value = 'manual';
-    console.log("Modo manual configurado con palabra:", currentWord);
 }
 
 
@@ -205,31 +197,28 @@ function setupLyricGameUI() {
 
 // Función para verificar las letras
 async function checkLyrics() {
-    const normalizeText = (text) => {
-        return text.toLowerCase()
-            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '')
-            .replace(/\s{2,}/g, ' ')
+    const normalizeText = (text) =>
+        text.toLowerCase()
+            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '') // Elimina puntuación
+            .replace(/\s{2,}/g, ' ') // Reemplaza múltiples espacios
             .trim();
-    };
 
     const lyrics = normalizeText(lyricsInput.value.trim());
     
-    // Validar longitud mínima
-    if (lyrics.split(' ').length < minWords.value) {
-        showResultLyric(`Ingresa al menos ${minWords.value} palabras consecutivas`, false);
+    if (lyrics.split(' ').length <= minWords.value-1) {
+        showResult(`Ingresa al menos ${minWords.value} palabras consecutivas`, false);
         return;
     }
 
-    // Validar presencia de la palabra
+    // Validación de la palabra en la letra
     const wordRegex = new RegExp(`\\b${currentWord}\\b`, 'i');
     if (!wordRegex.test(lyrics)) {
-        showResultLyric(`La palabra "${currentWord}" no está presente en tu texto`, false);
+        showResult(`La palabra "${currentWord}" no está presente en tu texto`, false);
         return;
     }
 
-    // Mostrar loading y deshabilitar botón
     loading.style.display = 'block';
-    checkButtonLyric.disabled = true;
+    checkButton.disabled = true;
 
     try {
         const response = await fetch('https://guessthelyric.vercel.app/api/check-lyrics', {
@@ -245,24 +234,25 @@ async function checkLyrics() {
         }
 
         const data = await response.json();
-        
+
         if (data.exists && data.verified) {
-            showResultLyric('¡Correcto! Letra verificada.', true, data);
+            showResult('¡Correcto! Letra verificada.', true, data);
         } else if (data.exists && !data.verified) {
-            showResultLyric(
+            showResult(
                 `<p id="posible">Se encontró una posible coincidencia, pero no se pudo verificar la letra exacta.</p>`,
                 false,
                 data
             );
         } else {
-            showResultLyric('No se encontró una canción con esa letra exacta.', false);
+            showResult('No se encontró una canción con esa letra exacta.', false);
         }
+        
     } catch (error) {
         console.error('Error:', error);
-        showResultLyric('Error al verificar la letra. Por favor, intenta nuevamente en unos momentos.', false);
+        showResult('Error al verificar la letra. Por favor, intenta nuevamente en unos momentos.', false);
     } finally {
         loading.style.display = 'none';
-        checkButtonLyric.disabled = false;
+        checkButton.disabled = false;
     }
 }
 
