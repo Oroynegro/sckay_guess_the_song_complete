@@ -356,25 +356,36 @@ document.getElementById("gameCategory").addEventListener("change", function(e) {
 
 // Actualizar la función del botón de inicio
 function updateStartButtonListener() {
+    if (!startButton) {
+        console.error('No se encontró el botón de inicio');
+        return;
+    }
+
+    // Remover el botón actual y crear uno nuevo para limpiar listeners previos
     const newStartButton = startButton.cloneNode(true);
     startButton.replaceWith(newStartButton);
-
-    const currentMode = gameConfig.category;
-
-    if (currentMode === "lyric") {
-        newStartButton.addEventListener("click", () => {
-            const mode = gameConfig.answerMode;
-            if (mode === "manual") {
-                setManualWord();
-            } else if (mode === "random") {
-                generateRandomWord();
-            }
-        });
-    } else if (currentMode === "songArtist") {
-        newStartButton.addEventListener("click", initializeGame);
+    
+    const updatedButton = document.getElementById('startButton');
+    const currentMode = document.getElementById("answerMode").value;
+    const gameCategory = document.getElementById("gameCategory").value;
+    
+    // Solo asignar un listener si estamos en modo lyric
+    if (gameCategory === "lyric") {
+        // Asignar el listener correcto según el modo
+        if (currentMode === "manual") {
+            updatedButton.addEventListener('click', setManualWord);
+            // Asegurarnos de que generateRandomWord no se ejecute
+            updatedButton.removeEventListener('click', generateRandomWord);
+        } else if (currentMode === "random") {
+            updatedButton.addEventListener('click', generateRandomWord);
+            // Asegurarnos de que setManualWord no se ejecute
+            updatedButton.removeEventListener('click', setManualWord);
+        }
+    } else {
+        // Para otros modos de juego
+        updatedButton.addEventListener('click', initializeGame);
     }
 }
-
 
 // Actualizar listener cuando cambia el modo de respuesta
 document.getElementById("answerMode").addEventListener('change', updateStartButtonListener);
@@ -504,43 +515,6 @@ function showResultLyric(message, isSuccess, data) {
 
     resultLyric.style.display = 'flex';
 }
-function switchGameMode(newMode) {
-    // Limpiar estado del juego actual
-    clearCurrentMode();
-
-    // Establecer el nuevo modo
-    gameConfig.category = newMode;
-
-    // Configurar el nuevo modo
-    if (newMode === "lyric") {
-        initializeLyricMode();
-    } else if (newMode === "songArtist") {
-        initializeSongArtistMode(); // Asegúrate de tener esta función implementada
-    }
-}
-
-function clearCurrentMode() {
-    // Ocultar elementos comunes
-    gameAreaLyric.style.display = "none";
-    gameAreaSongArtist.style.display = "none";
-    resultLyric.style.display = "none";
-
-    // Limpiar listeners
-    const newStartButton = startButton.cloneNode(true);
-    startButton.replaceWith(newStartButton);
-
-    // Reiniciar configuraciones específicas
-    gameConfig.usedTracks.clear();
-    gameConfig.currentRound = 1;
-}
-
-// Listener para cambiar el modo de juego
-document.getElementById("gameCategory").addEventListener("change", function (e) {
-    switchGameMode(e.target.value);
-});
-
-// Revisión de inicialización
-initialize();
 
 // Función para generar opciones múltiples
 async function generateMultipleChoiceOptions(correctTrack, allTracks) {
