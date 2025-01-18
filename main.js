@@ -156,8 +156,11 @@ answerModeSelect.addEventListener('change', function(e) {
 function setManualWord() {
     const manualWord = manualWordInputField.value.trim();
     if (manualWord) {
+        // Evitar que se genere una palabra aleatoria
         currentWord = manualWord;
         wordDisplay.textContent = currentWord.toUpperCase();
+        
+        // Actualizar la UI
         lyricsInput.style.display = 'block';
         checkButtonLyric.style.display = 'block';
         startButton.style.display = 'none';
@@ -165,6 +168,9 @@ function setManualWord() {
         lyricsInput.value = '';
         resultLyric.style.display = 'none';
         manualWordInput.style.display = 'none';
+        
+        // Asegurarnos de que el modo manual permanezca activo
+        document.getElementById("answerMode").value = 'manual';
     }
 }
 
@@ -351,6 +357,7 @@ function updateStartButtonListener() {
         return;
     }
 
+    // Remover el botón actual y crear uno nuevo para limpiar listeners previos
     const newStartButton = startButton.cloneNode(true);
     startButton.replaceWith(newStartButton);
     
@@ -358,13 +365,20 @@ function updateStartButtonListener() {
     const currentMode = document.getElementById("answerMode").value;
     const gameCategory = document.getElementById("gameCategory").value;
     
+    // Solo asignar un listener si estamos en modo lyric
     if (gameCategory === "lyric") {
-        if (currentMode === "random") {
-            updatedButton.addEventListener('click', generateRandomWord);
-        } else if (currentMode === "manual") {
+        // Asignar el listener correcto según el modo
+        if (currentMode === "manual") {
             updatedButton.addEventListener('click', setManualWord);
+            // Asegurarnos de que generateRandomWord no se ejecute
+            updatedButton.removeEventListener('click', generateRandomWord);
+        } else if (currentMode === "random") {
+            updatedButton.addEventListener('click', generateRandomWord);
+            // Asegurarnos de que setManualWord no se ejecute
+            updatedButton.removeEventListener('click', setManualWord);
         }
     } else {
+        // Para otros modos de juego
         updatedButton.addEventListener('click', initializeGame);
     }
 }
