@@ -155,24 +155,28 @@ answerModeSelect.addEventListener('change', function(e) {
 // Modificar la función setManualWord
 function setManualWord() {
     const manualWord = manualWordInputField.value.trim();
-    if (manualWord) {
-        // Evitar que se genere una palabra aleatoria
-        currentWord = manualWord;
-        wordDisplay.textContent = currentWord.toUpperCase();
-        
-        // Actualizar la UI
-        lyricsInput.style.display = 'block';
-        checkButtonLyric.style.display = 'block';
-        startButton.style.display = 'none';
-        lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
-        lyricsInput.value = '';
-        resultLyric.style.display = 'none';
-        manualWordInput.style.display = 'none';
-        
-        // Asegurarnos de que el modo manual permanezca activo
-        document.getElementById("answerMode").value = 'manual';
+    if (!manualWord) {
+        console.error("Por favor, ingresa una palabra válida.");
+        return;
     }
+
+    currentWord = manualWord;
+    wordDisplay.textContent = currentWord.toUpperCase();
+
+    // Actualizar la UI
+    lyricsInput.style.display = 'block';
+    checkButtonLyric.style.display = 'block';
+    startButton.style.display = 'none';
+    lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
+    lyricsInput.value = '';
+    resultLyric.style.display = 'none';
+    manualWordInput.style.display = 'none';
+    
+    // Asegurar que el modo manual esté activo
+    document.getElementById("answerMode").value = 'manual';
+    console.log("Modo manual configurado con palabra:", currentWord);
 }
+
 
 // Configurar la UI del juego de lírica
 function setupLyricGameUI() {
