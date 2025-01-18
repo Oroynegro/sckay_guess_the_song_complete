@@ -120,6 +120,17 @@ function generateRandomWord() {
 
     currentWord = palabras[selectedLanguage][Math.floor(Math.random() * palabras[selectedLanguage].length)];
     setupLyricGameUI();
+    if (gameConfig.mode === "multi") {
+        gameConfig.players.player1.name =
+            document.getElementById("player1").value || "Jugador 1";
+        gameConfig.players.player2.name =
+            document.getElementById("player2").value || "Jugador 2";
+        document.getElementById("player2Score").style.display = "block";
+    } else {
+        gameConfig.players.player1.name =
+            document.getElementById("player1").value || "Jugador 1";
+        document.getElementById("player2Score").style.display = "none";
+    }
 }
 
 function updateLyricMode(mode) {
@@ -177,6 +188,18 @@ function setManualWord() {
     // Asegurar que el modo manual esté activo
     document.getElementById("answerMode").value = 'manual';
     console.log("Modo manual configurado con palabra:", currentWord);
+
+    if (gameConfig.mode === "multi") {
+        gameConfig.players.player1.name =
+            document.getElementById("player1").value || "Jugador 1";
+        gameConfig.players.player2.name =
+            document.getElementById("player2").value || "Jugador 2";
+        document.getElementById("player2Score").style.display = "block";
+    } else {
+        gameConfig.players.player1.name =
+            document.getElementById("player1").value || "Jugador 1";
+        document.getElementById("player2Score").style.display = "none";
+    }
 }
 
 
