@@ -947,7 +947,7 @@ function initializeGame() {
         document.getElementById("playerContainer").style.display = "none"; // Hide Spotify player
         
         // Initialize lyric mode
-        initializeLyricMode();
+        setupLyricGameUI();
     } else {
         // Song/Artist mode setup
         document.getElementById("gameArea").style.display = "block";
