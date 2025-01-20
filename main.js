@@ -261,78 +261,38 @@ function setupLyricGameUI() {
 }
 
 // Función para verificar las letras
-async function checkLyrics() {
-    console.log('checkLyrics')
-    const normalizeText = (text) =>
-        text.toLowerCase()
-            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '') // Elimina puntuación
-            .replace(/\s{2,}/g, ' ') // Reemplaza múltiples espacios
-            .trim();
+try {
+    const response = await fetch('https://guessthelyric.vercel.app/api/check-lyrics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lyrics }),
+    });
 
-    const lyrics = normalizeText(lyricsInput.value.trim());
-    
-    if (lyrics.split(' ').length <= minWords.value-1) {
-        showResult(`Ingresa al menos ${minWords.value} palabras consecutivas`, false);
-        return;
+    if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+    const data = await response.json();
+
+    if (data.exists && data.verified) {
+        showResult('¡Correcto! Letra verificada.', true, data);
+        endRound("correct", "");
+    } else if (data.exists && !data.verified) {
+        showResult(
+            `<p id="posible">Se encontró una posible coincidencia, pero no se pudo verificar la letra exacta.</p>`,
+            false,
+            data
+        );
+        endRound("correct", "");
+    } else {
+        showResult('No se encontró una canción con esa letra exacta.', false);
+        endRound("incorrect", "");
     }
-
-    // Validación de la palabra en la letra
-    const wordRegex = new RegExp(`\\b${currentWord}\\b`, 'i');
-    if (!wordRegex.test(lyrics)) {
-        showResult(`La palabra "${currentWord}" no está presente en tu texto`, false);
-        return;
-    }
-
-    loading.style.display = 'block';
-    checkButton.disabled = true;
-
-    try {
-        const response = await fetch('https://guessthelyric.vercel.app/api/check-lyrics', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ lyrics }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error HTTP: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (data.exists && data.verified) {
-            showResult('¡Correcto! Letra verificada.', true, data);
-            correctLyric = "correcto"
-            endRound(correctLyric, "");
-            
-        } else if (data.exists && !data.verified) {
-            showResult(
-                `<p id="posible">Se encontró una posible coincidencia, pero no se pudo verificar la letra exacta.</p>`,
-                false,
-                data
-            );
-            correctLyric = "correcto"
-            endRound(correctLyric, "");
-
-
-
-        } else {
-            showResult('No se encontró una canción con esa letra exacta.', false);
-            correctLyric = "incorrecto"
-            endRound(correctLyric, "");
-
-
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        showResult('Error al verificar la letra. Por favor, intenta nuevamente en unos momentos.', false);
-    } finally {
-        loading.style.display = 'none';
-        checkButton.disabled = false;
-    }
+} catch (error) {
+    console.error('Error:', error);
+    showResult('Error al verificar la letra. Por favor, intenta nuevamente en unos momentos.', false);
+} finally {
+    loading.style.display = 'none';
+    checkButton.disabled = false;
 }
+
 
 // Función para mostrar el resultado
 function showResultLyric(message, isSuccess, data) {
@@ -1157,154 +1117,49 @@ function checkGuess(isTimeOut = false) {
 let timeLeft = 25; // Tiempo inicial del temporizador
 
 function endRound(isCorrect, selectedOption = "") {
-    console.log('endRound')
-    if (gameConfig.category === 'lyric'){
-        console.log("terminó la ronda")
+    console.log('endRound');
+
+    if (gameConfig.category === 'lyric') {
+        console.log("terminó la ronda de letras");
 
         let pointsForTime = 0;
-        if (timeLeft > 60) {
-            pointsForTime = 200;
-        } else if ( timeLeft >30){
-            pointsForTime = 150;
-        } else if (timeLeft > 15) {
-        pointsForTime = 100;
-        } else if (timeLeft > 0) {
-        pointsForTime = 50;
-        }
+        if (timeLeft > 60) pointsForTime = 200;
+        else if (timeLeft > 30) pointsForTime = 150;
+        else if (timeLeft > 15) pointsForTime = 100;
+        else if (timeLeft > 0) pointsForTime = 50;
 
-        if (correctLyric === ""){
+        if (isCorrect === "correct") {
+            gameConfig.players[gameConfig.currentPlayer].score += 300 + pointsForTime;
+            gameConfig.players[gameConfig.currentPlayer].correctAnswers += 1;
             updateGameStatus(
-                `<div class="overlay-points">La respuesta correcta era: 
+                `<div class="overlay-points">¡Correcto! 🎉 
                 <h2 class="answer-submited">${correctAnswer}</h2>
-                <span class="points-round">+0<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span></div>`,
-                "neutral"
+                <span class="points-round">+${
+                    pointsForTime + 300
+                }<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span>`,
+                "correct"
             );
-        } else if(correctLyric === "correct"){
-            // Caso de respuesta correcta
-        gameConfig.players[gameConfig.currentPlayer].score +=
-        300 + pointsForTime;
-    gameConfig.players[gameConfig.currentPlayer].correctAnswers += 1;
-    updateGameStatus(
-        `<div class="overlay-points">¡Correcto! 🎉 
-        <h2 class="answer-submited">${correctAnswer}</h2>
-        <span class="points-round">+${
-            pointsForTime + 300
-        }<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span>`,
-        "correct"
-    );
         } else {
-            // Caso de respuesta incorrecta
-        let pointsLost = 0;
-
-        if (gameConfig.players[gameConfig.currentPlayer].score > 0) {
-            pointsLost = 50;
-            gameConfig.players[gameConfig.currentPlayer].score -= pointsLost;
-        }
-
-        updateGameStatus(
-            `<div class="overlay-points">¡Incorrecto! No era: <h2 class="answer-submited">${guessInputShow}</h2> era: 
-            <h2 class="answer-submited">${correctAnswer}</h2>
-            <span class="points-round">${
-                pointsLost > 0 ? `-${pointsLost}` : "+0"
-            }<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span></div>`,
-            "incorrect"
-        );
+            let pointsLost = 0;
+            if (gameConfig.players[gameConfig.currentPlayer].score > 0) {
+                pointsLost = 50;
+                gameConfig.players[gameConfig.currentPlayer].score -= pointsLost;
+            }
+            updateGameStatus(
+                `<div class="overlay-points">¡Incorrecto! No era: <h2 class="answer-submited">${guessInputShow}</h2> era: 
+                <h2 class="answer-submited">${correctAnswer}</h2>
+                <span class="points-round">${
+                    pointsLost > 0 ? `-${pointsLost}` : "+0"
+                }<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span>`,
+                "incorrect"
+            );
         }
         updateScores();
-
+    }
 
     setTimeout(() => {
         if (gameConfig.mode === "multi") {
-            if (gameConfig.currentPlayer === "player1" && !isCorrect) {
-                gameConfig.currentPlayer = "player2";
-                updateCurrentPlayer();
-                newGame();
-            } else {
-                nextRound();
-            }
-        } else {
-            nextRound();
-        }
-    }, 5000);
-
-
-    } else {
-    const guessInputShow =
-        gameConfig.answerMode === "text"
-            ? (document.getElementById("guessInput")?.value || "").trim()
-            : selectedOption;
-
-    if (
-        gameConfig.answerMode === "text" &&
-        document.getElementById("guessInput")
-    ) {
-        document.getElementById("guessInput").disabled = true;
-        document.getElementById("submitGuess").disabled = true;
-    }
-
-    let pointsForTime = 0;
-    if (timeLeft > 20) {
-        pointsForTime = 200;
-    } else if (timeLeft > 10) {
-        pointsForTime = 150;
-    } else if (timeLeft > 5) {
-        pointsForTime = 100;
-    } else if (timeLeft > 0) {
-        pointsForTime = 50;
-    }
-
-    const correctAnswer =
-        gameConfig.category === "song"
-            ? currentTrack.name
-            : currentTrack.artists[0].name;
-
-    if (guessInputShow === "") {
-        // Caso de entrada vacía (sin respuesta)
-        updateGameStatus(
-            `<div class="overlay-points">La respuesta correcta era: 
-            <h2 class="answer-submited">${correctAnswer}</h2>
-            <span class="points-round">+0<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span></div>`,
-            "neutral"
-        );
-    } else if (isCorrect) {
-        // Caso de respuesta correcta
-        gameConfig.players[gameConfig.currentPlayer].score +=
-            300 + pointsForTime;
-        gameConfig.players[gameConfig.currentPlayer].correctAnswers += 1;
-        updateGameStatus(
-            `<div class="overlay-points">¡Correcto! 🎉 
-            <h2 class="answer-submited">${correctAnswer}</h2>
-            <span class="points-round">+${
-                pointsForTime + 300
-            }<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span>`,
-            "correct"
-        );
-    } else {
-        // Caso de respuesta incorrecta
-        let pointsLost = 0;
-
-        if (gameConfig.players[gameConfig.currentPlayer].score > 0) {
-            pointsLost = 50;
-            gameConfig.players[gameConfig.currentPlayer].score -= pointsLost;
-        }
-
-        updateGameStatus(
-            `<div class="overlay-points">¡Incorrecto! No era: <h2 class="answer-submited">${guessInputShow}</h2> era: 
-            <h2 class="answer-submited">${correctAnswer}</h2>
-            <span class="points-round">${
-                pointsLost > 0 ? `-${pointsLost}` : "+0"
-            }<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span></div>`,
-            "incorrect"
-        );
-    }
-    displaySongInfo();
-}
-    updateScores();
-
-
-    setTimeout(() => {
-        if (gameConfig.mode === "multi") {
-            if (gameConfig.currentPlayer === "player1" && !isCorrect) {
+            if (gameConfig.currentPlayer === "player1" && isCorrect !== "correct") {
                 gameConfig.currentPlayer = "player2";
                 updateCurrentPlayer();
                 newGame();
@@ -1316,6 +1171,7 @@ function endRound(isCorrect, selectedOption = "") {
         }
     }, 5000);
 }
+
 
 function nextRound() {
     console.log('nextRound')
