@@ -258,7 +258,8 @@ function setupLyricGameUI() {
     // Limpiar input
     lyricsInput.value = '';
 
-    endRound()
+    endRound();
+}
 
 // Función para verificar las letras
 async function checkLyrics() {
@@ -1147,9 +1148,9 @@ let timeLeft = 25; // Tiempo inicial del temporizador
 
 function endRound(isCorrect, selectedOption = "") {
     console.log('endRound')
-if (gameConfig.category === 'lyric'){
-    console.log("terminó la ronda")
-} else {
+    if (gameConfig.category === 'lyric'){
+        console.log("terminó la ronda")
+    } else {
     const guessInputShow =
         gameConfig.answerMode === "text"
             ? (document.getElementById("guessInput")?.value || "").trim()
@@ -1453,7 +1454,7 @@ async function showFinalResults() {
         player2Container.style.display = "none";
     }
 
-    if (gameConfig.category === 'lyric'){
+    if (gameConfig.answerMode === 'lyric'){
         console.log("funcionaaaaaaa")
     } else{
     // Actualizar información del contenido (artista/playlist)
