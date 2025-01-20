@@ -236,7 +236,7 @@ function setManualWord() {
 
 
 // Configurar la UI del juego de lírica
-function setupLyricGameUI() {
+async function setupLyricGameUI() {
     console.log('setupLyricGameUi')
     wordDisplay.textContent = currentWord.toUpperCase();
     lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
