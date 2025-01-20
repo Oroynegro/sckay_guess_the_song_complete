@@ -192,6 +192,7 @@ function updateLyricMode(mode) {
 answerModeSelect.addEventListener('change', function(e) {
     updateLyricMode(e.target.value);
     updateStartButtonListener();
+    console.log('updateStartButtonListenner answerModeSelect')
 });
 
 // Modificar la función setManualWord
@@ -361,6 +362,7 @@ function showResultLyric(message, isSuccess, data) {
 function initializeLyricMode() {
     console.log('InitializeLyricMode')
     updateStartButtonListener()
+    console.log('updateStartButtonListenner iniitalizeLyricMode')
     // Actualizar la configuración del juego
     updateGameInfo();
     console.log('updateGameInfo initializeGame')
@@ -415,7 +417,7 @@ document.getElementById("gameCategory").addEventListener("change", function(e) {
 
 // Actualizar la función del botón de inicio
 function updateStartButtonListener() {
-    console.log('updateStartButtonListener')
+    console.log('updateStartButtonListenerFunction')
     if (!startButton) {
         console.error('No se encontró el botón de inicio');
         return;
@@ -447,9 +449,6 @@ function updateStartButtonListener() {
     }
 }
 
-// Actualizar listener cuando cambia el modo de respuesta
-document.getElementById("answerMode").addEventListener('change', updateStartButtonListener);
-
 // Inicialización - asegurarnos de que solo se ejecute una vez
 let initialized = false;
 
@@ -461,11 +460,6 @@ function initialize() {
         console.error('No se pudieron encontrar todos los elementos necesarios');
         return;
     }
-
-    // Configurar el event listener para cambios en el modo
-    answerModeSelect.addEventListener('change', () => {
-        updateStartButtonListener();
-    });
 
     // Configuración inicial
     updateStartButtonListener();
@@ -924,7 +918,6 @@ function actualizarMaximo() {
 function initializeGame() {
     console.log('initializeGame')
     updateGameInfo();
-    console.log('updateGameInfo initializeGame')
     const gameCategory = document.querySelector("#gameCategory");
     
     // Update configuration
