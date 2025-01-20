@@ -192,7 +192,6 @@ function updateLyricMode(mode) {
 answerModeSelect.addEventListener('change', function(e) {
     updateLyricMode(e.target.value);
     updateStartButtonListener();
-    console.log('updateStartButtonListenner answerModeSelect')
 });
 
 // Modificar la función setManualWord
@@ -258,6 +257,8 @@ function setupLyricGameUI() {
     
     // Limpiar input
     lyricsInput.value = '';
+
+    nextRound();
 }
 
 // Función para verificar las letras
@@ -571,6 +572,7 @@ function showResultLyric(message, isSuccess, data) {
     }
 
     resultLyric.style.display = 'flex';
+    
 }
 
 // Función para generar opciones múltiples
@@ -1448,6 +1450,9 @@ async function showFinalResults() {
         player2Container.style.display = "none";
     }
 
+    if (gameConfig.answerMode === 'lyric'){
+        console.log("funcionaaaaaaa")
+    } else{
     // Actualizar información del contenido (artista/playlist)
     try {
         const selectionType = document.getElementById("selectionType").value;
@@ -1511,6 +1516,7 @@ async function showFinalResults() {
             "No se pudo obtener la información";
         document.getElementById("contentSubtitle2").textContent = "";
     }
+}
 
     // Configurar event listeners
     document
@@ -1520,6 +1526,8 @@ async function showFinalResults() {
         .getElementById("shareButton")
         .addEventListener("click", takeScreenshot);
 }
+
+
 
 function updateGameStatus(message, status) {
     console.log('updateGAmeStatus')
