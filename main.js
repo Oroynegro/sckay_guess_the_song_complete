@@ -364,6 +364,7 @@ function showResultLyric(message, isSuccess, data) {
 // Función para inicializar el modo lírico
 function initializeLyricMode() {
     console.log('InitializeLyricMode')
+    updateStartButtonListener()
     // Actualizar la configuración del juego
     updateGameInfo();
     gameConfig.mode = "single";
