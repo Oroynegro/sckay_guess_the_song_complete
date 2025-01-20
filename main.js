@@ -140,9 +140,7 @@ window.addEventListener('load', loadWords);
 
 // Función para generar palabra aleatoria
 function generateRandomWord() {
-    console.log('updateGAmeInfo')
-    // Llama a esta función después de cualquier cambio en gameConfig
-updateGameInfo();
+
     const selectedLanguage = languageSelect.value;
     
     if (palabras[selectedLanguage].length === 0) {
@@ -198,9 +196,7 @@ answerModeSelect.addEventListener('change', function(e) {
 
 // Modificar la función setManualWord
 function setManualWord() {
-    console.log('setManualWord')
-    // Llama a esta función después de cualquier cambio en gameConfig
-updateGameInfo();
+
     const manualWord = manualWordInputField.value.trim();
     if (!manualWord) {
         console.error("Por favor, ingresa una palabra válida.");
