@@ -87,7 +87,7 @@ fullscreenBtn.addEventListener("click", () => {
 });
 
 function updateGameInfo() {
-    console.log('updateGAmeInfo')
+    console.log('updateGAmeInfoFunction')
     // Actualiza la ronda actual y el total
     document.getElementById("currentRound").textContent = gameConfig.currentRound;
     document.getElementById("totalRounds").textContent = gameConfig.rounds;
@@ -367,6 +367,7 @@ function initializeLyricMode() {
     updateStartButtonListener()
     // Actualizar la configuración del juego
     updateGameInfo();
+    console.log('updateGameInfo initializeGame')
     gameConfig.mode = "single";
     gameConfig.category = "lyric";
     gameConfig.answerMode = document.getElementById("answerMode").value;
@@ -382,7 +383,6 @@ function initializeLyricMode() {
         lyricsInput.style.display = 'none';
         checkButtonLyric.style.display = 'none';
         wordDisplay.textContent = 'Escribe una palabra';
-    console.log('3')
 
     }
 }
@@ -928,6 +928,7 @@ function actualizarMaximo() {
 function initializeGame() {
     console.log('initializeGame')
     updateGameInfo();
+    console.log('updateGameInfo initializeGame')
     const gameCategory = document.querySelector("#gameCategory");
     
     // Update configuration
@@ -1277,6 +1278,7 @@ function nextRound() {
 function updateScores() {
     console.log('updateScores')
     updateGameInfo()
+    console.log('updateGameInfoUpdateScore')
 }
 
 function updateCurrentPlayer() {
