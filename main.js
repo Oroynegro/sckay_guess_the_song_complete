@@ -304,7 +304,7 @@ async function checkLyrics() {
         if (data.exists && data.verified) {
             showResult('¡Correcto! Letra verificada.', true, data);
             correctLyric = "correcto"
-            endRound();
+            endRound(correctLyric, "");
             
         } else if (data.exists && !data.verified) {
             showResult(
@@ -313,13 +313,15 @@ async function checkLyrics() {
                 data
             );
             correctLyric = "correcto"
-            endRound();
+            endRound(correctLyric, "");
+
 
 
         } else {
             showResult('No se encontró una canción con esa letra exacta.', false);
             correctLyric = "incorrecto"
-            endRound();
+            endRound(correctLyric, "");
+
 
         }
         
