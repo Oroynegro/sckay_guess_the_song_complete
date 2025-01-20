@@ -1843,6 +1843,9 @@ document.addEventListener("DOMContentLoaded", initializePlaylistSearch);
 // Modificar la función newGame para manejar las opciones múltiples
 async function newGame() {
     console.log('newGame')
+    if (gameConfig.category==="lyric"){
+        console.log("nuevo juego")
+    } else {
     resetGameUI();
     updateGameStatus("Cargando nueva canción...");
 
@@ -1922,6 +1925,7 @@ async function newGame() {
         console.error("Error en newGame:", error);
         updateGameStatus("Error al cargar la canción", "error");
     }
+}
 }
 // Function to escape special characters for use in onclick handlers
 function escapeString(str) {
