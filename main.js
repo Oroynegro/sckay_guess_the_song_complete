@@ -265,6 +265,12 @@ function setupLyricGameUI() {
 
 // Función para verificar las letras
 async function checkLyrics() {
+     // Detener el timer si está corriendo
+     if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
     if (timeLeft <= 0) {
         showResultLyric('¡Se acabó el tiempo!', false);
         endRound(false);
@@ -2089,9 +2095,10 @@ function resetGame() {
     gameConfig.players.player2.correctAnswers = 0;
 }
 function startLyricTimer() {
-    // Limpiar cualquier temporizador existente
+    // Limpiar cualquier temporizador existente y asegurarse de que timerInterval sea null
     if (timerInterval) {
         clearInterval(timerInterval);
+        timerInterval = null;
     }
 
     const timer = document.getElementById("timer");
@@ -2102,23 +2109,35 @@ function startLyricTimer() {
     lyricsInput.disabled = false;
     checkButtonLyric.disabled = false;
 
-    setTimeout(() => {
-        timerInterval = setInterval(() => {
+    // Remover el setTimeout exterior que estaba causando múltiples intervalos
+    timerInterval = setInterval(() => {
+        // Verificar que timeLeft sea mayor que 0 antes de decrementar
+        if (timeLeft > 0) {
             timeLeft--;
             timer.textContent = timeLeft;
 
-            if (timeLeft <= 0) {
+            if (timeLeft === 0) {
                 clearInterval(timerInterval);
+                timerInterval = null;
                 // Deshabilitar la entrada y el botón cuando se acaba el tiempo
                 lyricsInput.disabled = true;
                 checkButtonLyric.disabled = true;
                 handleLyricTimeout();
             }
-        }, 1000);
-    }, 1500);
+        } else {
+            // Si por alguna razón timeLeft llega a 0, limpiar el intervalo
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+    }, 1000);
 }
 
 function handleLyricTimeout() {
+    // Asegurarse de que el temporizador se detenga completamente
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
     showResultLyric('¡Se acabó el tiempo!', false);
     endRound(false);
 }
@@ -2152,6 +2171,12 @@ function calculateLyricPoints(isCorrect, wordsCount) {
     return points;
 }
 function startNextRound() {
+    // Detener cualquier timer existente
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
     // Incrementar el número de ronda
     gameConfig.currentRound++;
     
