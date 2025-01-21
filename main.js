@@ -236,7 +236,7 @@ function setManualWord() {
 
 
 // Configurar la UI del juego de lírica
-async function setupLyricGameUI() {
+function setupLyricGameUI() {
     console.log('setupLyricGameUi')
     wordDisplay.textContent = currentWord.toUpperCase();
     lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
@@ -261,38 +261,64 @@ async function setupLyricGameUI() {
 }
 
 // Función para verificar las letras
-try {
-    const response = await fetch('https://guessthelyric.vercel.app/api/check-lyrics', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lyrics }),
-    });
+async function checkLyrics() {
+    console.log('checkLyrics')
+    const normalizeText = (text) =>
+        text.toLowerCase()
+            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '') // Elimina puntuación
+            .replace(/\s{2,}/g, ' ') // Reemplaza múltiples espacios
+            .trim();
 
-    if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
-    const data = await response.json();
-
-    if (data.exists && data.verified) {
-        showResult('¡Correcto! Letra verificada.', true, data);
-        endRound("correct", "");
-    } else if (data.exists && !data.verified) {
-        showResult(
-            `<p id="posible">Se encontró una posible coincidencia, pero no se pudo verificar la letra exacta.</p>`,
-            false,
-            data
-        );
-        endRound("correct", "");
-    } else {
-        showResult('No se encontró una canción con esa letra exacta.', false);
-        endRound("incorrect", "");
+    const lyrics = normalizeText(lyricsInput.value.trim());
+    
+    if (lyrics.split(' ').length <= minWords.value-1) {
+        showResult(`Ingresa al menos ${minWords.value} palabras consecutivas`, false);
+        return;
     }
-} catch (error) {
-    console.error('Error:', error);
-    showResult('Error al verificar la letra. Por favor, intenta nuevamente en unos momentos.', false);
-} finally {
-    loading.style.display = 'none';
-    checkButton.disabled = false;
-}
 
+    // Validación de la palabra en la letra
+    const wordRegex = new RegExp(`\\b${currentWord}\\b`, 'i');
+    if (!wordRegex.test(lyrics)) {
+        showResult(`La palabra "${currentWord}" no está presente en tu texto`, false);
+        return;
+    }
+
+    loading.style.display = 'block';
+    checkButton.disabled = true;
+
+    try {
+        const response = await fetch('https://guessthelyric.vercel.app/api/check-lyrics', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lyrics }),
+        });
+    
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+        const data = await response.json();
+    
+        if (data.exists && data.verified) {
+            showResult('¡Correcto! Letra verificada.', true, data);
+            endRound("correct", "");
+        } else if (data.exists && !data.verified) {
+            showResult(
+                `<p id="posible">Se encontró una posible coincidencia, pero no se pudo verificar la letra exacta.</p>`,
+                false,
+                data
+            );
+            endRound("correct", "");
+        } else {
+            showResult('No se encontró una canción con esa letra exacta.', false);
+            endRound("incorrect", "");
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        showResult('Error al verificar la letra. Por favor, intenta nuevamente en unos momentos.', false);
+    } finally {
+        loading.style.display = 'none';
+        checkButton.disabled = false;
+    }
+    
+}
 
 // Función para mostrar el resultado
 function showResultLyric(message, isSuccess, data) {
