@@ -892,7 +892,7 @@ function ocultarLevel() {
         manualOption.style.display = 'block';
 
         levelSelectContainer.style.display='none'
-        roundsSelectContainer.style.display='none'
+        roundsSelectContainer.style.display='block'
         selectionTypeSelectContainer.style.display='none'
         artistSelection.style.display='none'
         playlistSelection.style.display='none'
