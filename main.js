@@ -250,7 +250,7 @@ function setupLyricGameUI() {
     startButton.style.display = 'none';
     resultLyric.style.display = 'none';
     gameConfigContainer.style.display = 'none';
-    gameInfo.style.display = 'block'; // Mostrar información del juego
+    gameInfo.style.display = 'block';
     gameAreaSongArtist.style.display = 'none';
     playInstruction.style.display = 'none';
     
@@ -259,7 +259,7 @@ function setupLyricGameUI() {
     lyricsInput.disabled = false;
     checkButtonLyric.disabled = false;
 
-    // Iniciar el temporizador
+    // Iniciar el temporizador para la primera ronda
     startLyricTimer();
 }
 
@@ -315,7 +315,14 @@ async function checkLyrics() {
         if (data.exists && data.verified) {
             const points = calculateLyricPoints(true, wordsCount);
             showResultLyric('¡Correcto! Letra verificada.', true, data, points);
-            endRound(true);
+            
+            // Pasar a la siguiente ronda automáticamente después de mostrar el resultado
+            setTimeout(() => {
+                endRound(true);
+                if (gameConfig.currentRound <= gameConfig.rounds) {
+                    startNextRound();
+                }
+            }, 3000); // Esperar 3 segundos antes de pasar a la siguiente ronda
         } else if (data.exists && !data.verified) {
             const points = calculateLyricPoints(false, wordsCount);
             showResultLyric(
@@ -2082,6 +2089,11 @@ function resetGame() {
     gameConfig.players.player2.correctAnswers = 0;
 }
 function startLyricTimer() {
+    // Limpiar cualquier temporizador existente
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+
     const timer = document.getElementById("timer");
     timeLeft = 25;
     timer.textContent = timeLeft;
@@ -2105,6 +2117,7 @@ function startLyricTimer() {
         }, 1000);
     }, 1500);
 }
+
 function handleLyricTimeout() {
     showResultLyric('¡Se acabó el tiempo!', false);
     endRound(false);
@@ -2137,4 +2150,37 @@ function calculateLyricPoints(isCorrect, wordsCount) {
     }
     
     return points;
+}
+function startNextRound() {
+    // Incrementar el número de ronda
+    gameConfig.currentRound++;
+    
+    // Verificar si el juego ha terminado
+    if (gameConfig.currentRound > gameConfig.rounds) {
+        showFinalResults();
+        return;
+    }
+
+    // Actualizar la UI para la nueva ronda
+    document.getElementById("currentRound").textContent = gameConfig.currentRound;
+    
+    // En modo multijugador, cambiar el jugador actual
+    if (gameConfig.mode === "multi") {
+        gameConfig.currentPlayer = gameConfig.currentPlayer === "player1" ? "player2" : "player1";
+        updateCurrentPlayer();
+    }
+
+    // Limpiar la entrada y el resultado anterior
+    lyricsInput.value = '';
+    resultLyric.style.display = 'none';
+
+    // Generar nueva palabra si es modo aleatorio
+    if (gameConfig.answerMode === "random") {
+        generateRandomWord();
+    } else {
+        manualWordInput.style.display = 'flex';
+    }
+
+    // Iniciar nuevo temporizador
+    startLyricTimer();
 }
