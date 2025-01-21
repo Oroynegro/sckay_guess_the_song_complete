@@ -11,6 +11,7 @@ const selectionTypeSelectContainer = document.getElementById('selectionTypeSelec
 const artistSelection = document.getElementById('artistSelection');
 const playlistSelection = document.getElementById('playlistSelection');
 
+
 //guess the lyric
 const wordDisplay = document.getElementById('wordDisplay');
 const lyricsInput = document.getElementById('lyricsInput');
@@ -30,13 +31,12 @@ const randomOption = document.getElementById('randomOption');
 const manualOption = document.getElementById('manualOption');
 const startButton = document.getElementById('startButton');
 const resultLyric = document.getElementById('resultLyric');
-const gameArea = document.getElementById('gameArea');
-const gameInfo = document.getElementById('gameInfo');
-const gameAreaSongArtist = document.getElementById('gameAreaSongArtist');
+const gameArea = document.getElementById('gameArea')
+const gameInfo = document.getElementById('gameInfo')
+const gameAreaSongArtist = document.getElementById('gameAreaSongArtist')
 const gameAreaLyric = document.getElementById('gameAreaLyric');
 const gameConfigContainer = document.getElementById('gameConfig');
-const playInstruction = document.getElementById('playInstruction');
-const correctLyric = ""
+const playInstruction = document.getElementById('playInstruction')
 
 let gameConfig = {
     mode: "single",
@@ -258,74 +258,88 @@ function setupLyricGameUI() {
     // Limpiar input
     lyricsInput.value = '';
 
+    endRound();
 }
 
 // Función para verificar las letras
 async function checkLyrics() {
-    console.log('checkLyrics')
     const normalizeText = (text) =>
         text.toLowerCase()
-            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '') // Elimina puntuación
-            .replace(/\s{2,}/g, ' ') // Reemplaza múltiples espacios
+            .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '')
+            .replace(/\s{2,}/g, ' ')
             .trim();
 
     const lyrics = normalizeText(lyricsInput.value.trim());
     
     if (lyrics.split(' ').length <= minWords.value-1) {
-        showResult(`Ingresa al menos ${minWords.value} palabras consecutivas`, false);
+        showResultLyric(`Ingresa al menos ${minWords.value} palabras consecutivas`, false);
         return;
     }
 
-    // Validación de la palabra en la letra
     const wordRegex = new RegExp(`\\b${currentWord}\\b`, 'i');
     if (!wordRegex.test(lyrics)) {
-        showResult(`La palabra "${currentWord}" no está presente en tu texto`, false);
+        showResultLyric(`La palabra "${currentWord}" no está presente en tu texto`, false);
+        endRound(false);
         return;
     }
 
     loading.style.display = 'block';
-    checkButton.disabled = true;
+    checkButtonLyric.disabled = true;
 
     try {
         const response = await fetch('https://guessthelyric.vercel.app/api/check-lyrics', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify({ lyrics }),
         });
-    
-        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
         const data = await response.json();
-    
+
         if (data.exists && data.verified) {
-            showResult('¡Correcto! Letra verificada.', true, data);
-            endRound("correct", "");
+            showResultLyric('¡Correcto! Letra verificada.', true, data);
+            endRound(true);
         } else if (data.exists && !data.verified) {
-            showResult(
+            showResultLyric(
                 `<p id="posible">Se encontró una posible coincidencia, pero no se pudo verificar la letra exacta.</p>`,
                 false,
                 data
             );
-            endRound("correct", "");
+            endRound(false);
         } else {
-            showResult('No se encontró una canción con esa letra exacta.', false);
-            endRound("incorrect", "");
+            showResultLyric('No se encontró una canción con esa letra exacta.', false);
+            endRound(false);
         }
+        
     } catch (error) {
         console.error('Error:', error);
-        showResult('Error al verificar la letra. Por favor, intenta nuevamente en unos momentos.', false);
+        showResultLyric('Error al verificar la letra. Por favor, intenta nuevamente en unos momentos.', false);
+        endRound(false);
     } finally {
         loading.style.display = 'none';
-        checkButton.disabled = false;
+        checkButtonLyric.disabled = false;
     }
-    
 }
 
 // Función para mostrar el resultado
 function showResultLyric(message, isSuccess, data) {
-    console.log('showResultLyric')
     resultLyric.innerHTML = '';
 
+    let pointsForRound = 0;
     if (isSuccess) {
+        // Calcular puntos basados en la longitud de la letra
+        const wordsCount = lyricsInput.value.trim().split(/\s+/).length;
+        pointsForRound = 300 + Math.min(200, wordsCount * 5); // Base + bonus por palabras
+
+        // Actualizar puntuación del jugador actual
+        gameConfig.players[gameConfig.currentPlayer].score += pointsForRound;
+        gameConfig.players[gameConfig.currentPlayer].correctAnswers += 1;
+
         let formattedStanza = data.stanza
             .replace(/\n/g, '<br>')
             .replace(/(<br>\s*){3,}/g, '<br><br>');
@@ -342,18 +356,32 @@ function showResultLyric(message, isSuccess, data) {
             <span class="titleSong">${data.title}</span>
             <span class="artistSong">${data.artist}</span>
             <div class="stanzaSong">${formattedStanza}</div>
-        `;
-    } else if (data && data.exists) {
-        resultLyric.innerHTML = `
-            <span class="titleSong">${data.title}</span>
-            <span class="artistSong">${data.artist}</span>
-            <p>${message}</p>
+            <div class="points-earned">+${pointsForRound}<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></div>
         `;
     } else {
-        resultLyric.innerHTML = `<p>${message}</p>`;
+        // Penalización por respuesta incorrecta
+        if (gameConfig.players[gameConfig.currentPlayer].score > 0) {
+            pointsForRound = -50;
+            gameConfig.players[gameConfig.currentPlayer].score += pointsForRound;
+        }
+
+        if (data && data.exists) {
+            resultLyric.innerHTML = `
+                <span class="titleSong">${data.title}</span>
+                <span class="artistSong">${data.artist}</span>
+                <p>${message}</p>
+                <div class="points-earned">${pointsForRound}<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></div>
+            `;
+        } else {
+            resultLyric.innerHTML = `
+                <p>${message}</p>
+                <div class="points-earned">${pointsForRound}<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></div>
+            `;
+        }
     }
 
     resultLyric.style.display = 'flex';
+    updateScores();
 }
 
 // Función para inicializar el modo lírico
@@ -397,7 +425,7 @@ document.getElementById("gameCategory").addEventListener("change", function(e) {
         
         // Ajustar contenedores
         levelSelectContainer.style.display = 'none';
-        roundsSelectContainer.style.display = 'none';
+        roundsSelectContainer.style.display = 'block';
         selectionTypeSelectContainer.style.display = 'none';
         artistSelection.style.display = 'none';
         playlistSelection.style.display = 'none';
@@ -1103,6 +1131,7 @@ function checkGuess(isTimeOut = false) {
     );
     let correctAnswer = "";
     let isCorrect = false;
+    let isPartialMatch = false; // Nuevo indicador para coincidencia parcial
 
     if (isTimeOut && !guess) {
         clearInterval(timerInterval);
@@ -1143,49 +1172,86 @@ function checkGuess(isTimeOut = false) {
 let timeLeft = 25; // Tiempo inicial del temporizador
 
 function endRound(isCorrect, selectedOption = "") {
-    console.log('endRound');
+    console.log('endRound')
+    if (gameConfig.category === 'lyric'){
+        console.log("terminó la ronda")
+    } else {
+    const guessInputShow =
+        gameConfig.answerMode === "text"
+            ? (document.getElementById("guessInput")?.value || "").trim()
+            : selectedOption;
 
-    if (gameConfig.category === 'lyric') {
-        console.log("terminó la ronda de letras");
-
-        let pointsForTime = 0;
-        if (timeLeft > 60) pointsForTime = 200;
-        else if (timeLeft > 30) pointsForTime = 150;
-        else if (timeLeft > 15) pointsForTime = 100;
-        else if (timeLeft > 0) pointsForTime = 50;
-
-        if (isCorrect === "correct") {
-            gameConfig.players[gameConfig.currentPlayer].score += 300 + pointsForTime;
-            gameConfig.players[gameConfig.currentPlayer].correctAnswers += 1;
-            updateGameStatus(
-                `<div class="overlay-points">¡Correcto! 🎉 
-                <h2 class="answer-submited">${correctAnswer}</h2>
-                <span class="points-round">+${
-                    pointsForTime + 300
-                }<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span>`,
-                "correct"
-            );
-        } else {
-            let pointsLost = 0;
-            if (gameConfig.players[gameConfig.currentPlayer].score > 0) {
-                pointsLost = 50;
-                gameConfig.players[gameConfig.currentPlayer].score -= pointsLost;
-            }
-            updateGameStatus(
-                `<div class="overlay-points">¡Incorrecto! No era: <h2 class="answer-submited">${guessInputShow}</h2> era: 
-                <h2 class="answer-submited">${correctAnswer}</h2>
-                <span class="points-round">${
-                    pointsLost > 0 ? `-${pointsLost}` : "+0"
-                }<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span>`,
-                "incorrect"
-            );
-        }
-        updateScores();
+    if (
+        gameConfig.answerMode === "text" &&
+        document.getElementById("guessInput")
+    ) {
+        document.getElementById("guessInput").disabled = true;
+        document.getElementById("submitGuess").disabled = true;
     }
+
+    let pointsForTime = 0;
+    if (timeLeft > 20) {
+        pointsForTime = 200;
+    } else if (timeLeft > 10) {
+        pointsForTime = 150;
+    } else if (timeLeft > 5) {
+        pointsForTime = 100;
+    } else if (timeLeft > 0) {
+        pointsForTime = 50;
+    }
+
+    const correctAnswer =
+        gameConfig.category === "song"
+            ? currentTrack.name
+            : currentTrack.artists[0].name;
+
+    if (guessInputShow === "") {
+        // Caso de entrada vacía (sin respuesta)
+        updateGameStatus(
+            `<div class="overlay-points">La respuesta correcta era: 
+            <h2 class="answer-submited">${correctAnswer}</h2>
+            <span class="points-round">+0<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span></div>`,
+            "neutral"
+        );
+    } else if (isCorrect) {
+        // Caso de respuesta correcta
+        gameConfig.players[gameConfig.currentPlayer].score +=
+            300 + pointsForTime;
+        gameConfig.players[gameConfig.currentPlayer].correctAnswers += 1;
+        updateGameStatus(
+            `<div class="overlay-points">¡Correcto! 🎉 
+            <h2 class="answer-submited">${correctAnswer}</h2>
+            <span class="points-round">+${
+                pointsForTime + 300
+            }<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span>`,
+            "correct"
+        );
+    } else {
+        // Caso de respuesta incorrecta
+        let pointsLost = 0;
+
+        if (gameConfig.players[gameConfig.currentPlayer].score > 0) {
+            pointsLost = 50;
+            gameConfig.players[gameConfig.currentPlayer].score -= pointsLost;
+        }
+
+        updateGameStatus(
+            `<div class="overlay-points">¡Incorrecto! No era: <h2 class="answer-submited">${guessInputShow}</h2> era: 
+            <h2 class="answer-submited">${correctAnswer}</h2>
+            <span class="points-round">${
+                pointsLost > 0 ? `-${pointsLost}` : "+0"
+            }<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></span></div>`,
+            "incorrect"
+        );
+    }
+    displaySongInfo();
+}
+    updateScores();
+
 
     setTimeout(() => {
         if (gameConfig.mode === "multi") {
-            if (gameConfig.currentPlayer === "player1" && isCorrect !== "correct") {
+            if (gameConfig.currentPlayer === "player1" && !isCorrect) {
                 gameConfig.currentPlayer = "player2";
                 updateCurrentPlayer();
                 newGame();
@@ -1197,7 +1263,6 @@ function endRound(isCorrect, selectedOption = "") {
         }
     }, 5000);
 }
-
 
 function nextRound() {
     console.log('nextRound')
