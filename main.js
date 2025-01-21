@@ -261,6 +261,7 @@ function setManualWord() {
         
         gameConfig.manualWords.player1 = player1Words;
         gameConfig.manualWords.player2 = player2Words;
+        createManualWordsInputs();
     }
     
     updateCurrentWord();
