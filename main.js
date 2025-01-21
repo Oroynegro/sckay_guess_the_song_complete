@@ -51,6 +51,10 @@ let gameConfig = {
         player2: { name: "Jugador 2", score: 0, correctAnswers: 0 },
     },
     currentPlayer: "player1",
+    manualWords: {
+        player1: [],
+        player2: []
+    }
 };
 const fullscreenBtn = document.getElementById("fullscreenBtn");
 const gameContainer = document.getElementById("gameContainer");
@@ -122,6 +126,51 @@ function cleanString(str) {
     if (!str) return "";
     // Elimina escape characters y normaliza apóstrofes
     return str.replace(/\\'/g, "'").replace(/\\/g, "").trim();
+}
+
+// Función para crear inputs de palabras manuales
+function createManualWordsInputs() {
+    const manualWordInput = document.getElementById('manualWordInput');
+    manualWordInput.innerHTML = ''; // Limpiar contenido previo
+    
+    if (gameConfig.mode === "multi") {
+        // Crear inputs para ambos jugadores
+        const player1Container = document.createElement('div');
+        const player2Container = document.createElement('div');
+        
+        player1Container.innerHTML = `
+            <h3>Palabras para ${gameConfig.players.player2.name}</h3>
+            ${Array(gameConfig.rounds).fill(0).map((_, i) => `
+                <div class="word-input-container">
+                    <label>Palabra ${i + 1}:</label>
+                    <input type="text" class="manual-word-input player1-word" data-round="${i + 1}" required>
+                </div>
+            `).join('')}
+        `;
+        
+        player2Container.innerHTML = `
+            <h3>Palabras para ${gameConfig.players.player1.name}</h3>
+            ${Array(gameConfig.rounds).fill(0).map((_, i) => `
+                <div class="word-input-container">
+                    <label>Palabra ${i + 1}:</label>
+                    <input type="text" class="manual-word-input player2-word" data-round="${i + 1}" required>
+                </div>
+            `).join('')}
+        `;
+        
+        manualWordInput.appendChild(player1Container);
+        manualWordInput.appendChild(player2Container);
+    } else {
+        // Solo mostrar un input para modo single
+        const wordInput = document.createElement('div');
+        wordInput.innerHTML = `
+            <div class="word-input-container">
+                <label>Palabra:</label>
+                <input type="text" id="manualWordInputField" required>
+            </div>
+        `;
+        manualWordInput.appendChild(wordInput);
+    }
 }
 
 // Cargar las palabras desde el archivo JSON
@@ -196,44 +245,44 @@ answerModeSelect.addEventListener('change', function(e) {
 
 // Modificar la función setManualWord
 function setManualWord() {
-
-    const manualWord = manualWordInputField.value.trim();
-    if (!manualWord) {
-        console.error("Por favor, ingresa una palabra válida.");
-        return;
-    }
-
-    currentWord = manualWord;
-    wordDisplay.textContent = currentWord.toUpperCase();
-
-    // Actualizar la UI
-    lyricsInput.style.display = 'block';
-    checkButtonLyric.style.display = 'block';
-    startButton.style.display = 'none';
-    lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
-    lyricsInput.value = '';
-    resultLyric.style.display = 'none';
-    manualWordInput.style.display = 'none';
-    gameAreaSongArtist.style.display = 'none'
-    gameAreaLyric.style.display ='flex'
-    
-    // Asegurar que el modo manual esté activo
-    document.getElementById("answerMode").value = 'manual';
-    console.log("Modo manual configurado con palabra:", currentWord);
-
     if (gameConfig.mode === "multi") {
-        gameConfig.players.player1.name =
-            document.getElementById("player1").value || "Jugador 1";
-        gameConfig.players.player2.name =
-            document.getElementById("player2").value || "Jugador 2";
-        document.getElementById("player2Score").style.display = "block";
-    } else {
-        gameConfig.players.player1.name =
-            document.getElementById("player1").value || "Jugador 1";
-        document.getElementById("player2Score").style.display = "none";
+        const player1Words = [...document.querySelectorAll('.player1-word')]
+            .map(input => input.value.trim())
+            .filter(word => word !== '');
+        
+        const player2Words = [...document.querySelectorAll('.player2-word')]
+            .map(input => input.value.trim())
+            .filter(word => word !== '');
+        
+        if (player1Words.length !== gameConfig.rounds || player2Words.length !== gameConfig.rounds) {
+            alert("Por favor, ingresa todas las palabras requeridas");
+            return;
+        }
+        
+        gameConfig.manualWords.player1 = player1Words;
+        gameConfig.manualWords.player2 = player2Words;
     }
+    
+    updateCurrentWord();
+    setupLyricGameUI();
 }
-
+// Nueva función para actualizar la palabra actual
+function updateCurrentWord() {
+    if (gameConfig.answerMode === "random") {
+        generateRandomWord();
+    } else {
+        if (gameConfig.mode === "multi") {
+            const currentPlayerWords = gameConfig.manualWords[
+                gameConfig.currentPlayer === "player1" ? "player2" : "player1"
+            ];
+            currentWord = currentPlayerWords[gameConfig.currentRound - 1];
+        } else {
+            currentWord = document.getElementById("manualWordInputField").value.trim();
+        }
+    }
+    
+    wordDisplay.textContent = currentWord.toUpperCase();
+}
 
 // Configurar la UI del juego de lírica
 function setupLyricGameUI() {
@@ -411,28 +460,25 @@ function showResultLyric(message, isSuccess, data, points = 0) {
 
 // Función para inicializar el modo lírico
 function initializeLyricMode() {
-    console.log('InitializeLyricMode')
-    updateStartButtonListener()
-    console.log('updateStartButtonListenner iniitalizeLyricMode')
-    // Actualizar la configuración del juego
+    updateStartButtonListener();
     updateGameInfo();
-    console.log('updateGameInfo initializeGame')
-    gameConfig.mode = "single";
+    
     gameConfig.category = "lyric";
     gameConfig.answerMode = document.getElementById("answerMode").value;
+    gameConfig.currentRound = 1;
+    gameConfig.manualWords = { player1: [], player2: [] };
     
-    // Configurar la UI según el modo de respuesta
     if (gameConfig.answerMode === "random") {
         manualWordInput.style.display = 'none';
         languageSelectContainer.style.display = 'flex';
-
     } else if (gameConfig.answerMode === "manual") {
+        createManualWordsInputs();
         manualWordInput.style.display = 'flex';
         languageSelectContainer.style.display = 'none';
         lyricsInput.style.display = 'none';
         checkButtonLyric.style.display = 'none';
-        wordDisplay.textContent = 'Escribe una palabra';
-
+        wordDisplay.textContent = gameConfig.mode === "multi" ? 
+            'Ingresa las palabras para cada jugador' : 'Escribe una palabra';
     }
 }
 
@@ -2171,41 +2217,28 @@ function calculateLyricPoints(isCorrect, wordsCount) {
     return points;
 }
 function startNextRound() {
-    // Detener cualquier timer existente
     if (timerInterval) {
         clearInterval(timerInterval);
         timerInterval = null;
     }
 
-    // Incrementar el número de ronda
     gameConfig.currentRound++;
     
-    // Verificar si el juego ha terminado
     if (gameConfig.currentRound > gameConfig.rounds) {
         showFinalResults();
         return;
     }
 
-    // Actualizar la UI para la nueva ronda
     document.getElementById("currentRound").textContent = gameConfig.currentRound;
     
-    // En modo multijugador, cambiar el jugador actual
     if (gameConfig.mode === "multi") {
         gameConfig.currentPlayer = gameConfig.currentPlayer === "player1" ? "player2" : "player1";
         updateCurrentPlayer();
     }
 
-    // Limpiar la entrada y el resultado anterior
     lyricsInput.value = '';
     resultLyric.style.display = 'none';
-
-    // Generar nueva palabra si es modo aleatorio
-    if (gameConfig.answerMode === "random") {
-        generateRandomWord();
-    } else {
-        manualWordInput.style.display = 'flex';
-    }
-
-    // Iniciar nuevo temporizador
+    
+    updateCurrentWord();
     startLyricTimer();
 }
