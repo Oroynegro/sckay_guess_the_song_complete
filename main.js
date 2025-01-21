@@ -237,7 +237,6 @@ function setManualWord() {
 
 // Configurar la UI del juego de lírica
 function setupLyricGameUI() {
-    console.log('setupLyricGameUi')
     wordDisplay.textContent = currentWord.toUpperCase();
     lyricsInput.placeholder = `Escribe la letra de la canción (mínimo ${minWords.value} palabras)`;
     
@@ -251,18 +250,27 @@ function setupLyricGameUI() {
     startButton.style.display = 'none';
     resultLyric.style.display = 'none';
     gameConfigContainer.style.display = 'none';
-    gameInfo.style.display = 'none';
+    gameInfo.style.display = 'block'; // Mostrar información del juego
     gameAreaSongArtist.style.display = 'none';
     playInstruction.style.display = 'none';
     
-    // Limpiar input
+    // Limpiar input y habilitar controles
     lyricsInput.value = '';
+    lyricsInput.disabled = false;
+    checkButtonLyric.disabled = false;
 
-    endRound();
+    // Iniciar el temporizador
+    startLyricTimer();
 }
 
 // Función para verificar las letras
 async function checkLyrics() {
+    if (timeLeft <= 0) {
+        showResultLyric('¡Se acabó el tiempo!', false);
+        endRound(false);
+        return;
+    }
+
     const normalizeText = (text) =>
         text.toLowerCase()
             .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '')
@@ -270,15 +278,17 @@ async function checkLyrics() {
             .trim();
 
     const lyrics = normalizeText(lyricsInput.value.trim());
+    const wordsCount = lyrics.split(' ').length;
     
-    if (lyrics.split(' ').length <= minWords.value-1) {
+    if (wordsCount <= minWords.value - 1) {
         showResultLyric(`Ingresa al menos ${minWords.value} palabras consecutivas`, false);
         return;
     }
 
     const wordRegex = new RegExp(`\\b${currentWord}\\b`, 'i');
     if (!wordRegex.test(lyrics)) {
-        showResultLyric(`La palabra "${currentWord}" no está presente en tu texto`, false);
+        const points = calculateLyricPoints(false, wordsCount);
+        showResultLyric(`La palabra "${currentWord}" no está presente en tu texto`, false, null, points);
         endRound(false);
         return;
     }
@@ -300,19 +310,24 @@ async function checkLyrics() {
         }
 
         const data = await response.json();
+        clearInterval(timerInterval); // Detener el temporizador cuando hay una respuesta
 
         if (data.exists && data.verified) {
-            showResultLyric('¡Correcto! Letra verificada.', true, data);
+            const points = calculateLyricPoints(true, wordsCount);
+            showResultLyric('¡Correcto! Letra verificada.', true, data, points);
             endRound(true);
         } else if (data.exists && !data.verified) {
+            const points = calculateLyricPoints(false, wordsCount);
             showResultLyric(
                 `<p id="posible">Se encontró una posible coincidencia, pero no se pudo verificar la letra exacta.</p>`,
                 false,
-                data
+                data,
+                points
             );
             endRound(false);
         } else {
-            showResultLyric('No se encontró una canción con esa letra exacta.', false);
+            const points = calculateLyricPoints(false, wordsCount);
+            showResultLyric('No se encontró una canción con esa letra exacta.', false, null, points);
             endRound(false);
         }
         
@@ -327,19 +342,10 @@ async function checkLyrics() {
 }
 
 // Función para mostrar el resultado
-function showResultLyric(message, isSuccess, data) {
+function showResultLyric(message, isSuccess, data, points = 0) {
     resultLyric.innerHTML = '';
 
-    let pointsForRound = 0;
     if (isSuccess) {
-        // Calcular puntos basados en la longitud de la letra
-        const wordsCount = lyricsInput.value.trim().split(/\s+/).length;
-        pointsForRound = 300 + Math.min(200, wordsCount * 5); // Base + bonus por palabras
-
-        // Actualizar puntuación del jugador actual
-        gameConfig.players[gameConfig.currentPlayer].score += pointsForRound;
-        gameConfig.players[gameConfig.currentPlayer].correctAnswers += 1;
-
         let formattedStanza = data.stanza
             .replace(/\n/g, '<br>')
             .replace(/(<br>\s*){3,}/g, '<br><br>');
@@ -351,38 +357,44 @@ function showResultLyric(message, isSuccess, data) {
             }
         }
 
+        // Actualizar puntuación del jugador actual
+        gameConfig.players[gameConfig.currentPlayer].score += points;
+        gameConfig.players[gameConfig.currentPlayer].correctAnswers += 1;
+
         resultLyric.innerHTML = `
             <h3 class="lyricVerification">¡Correcto! Letra verificada</h3>
             <span class="titleSong">${data.title}</span>
             <span class="artistSong">${data.artist}</span>
             <div class="stanzaSong">${formattedStanza}</div>
-            <div class="points-earned">+${pointsForRound}<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></div>
+            <div class="points-earned">+${points}<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></div>
+            <div class="time-bonus">Tiempo restante: ${timeLeft}s</div>
         `;
     } else {
-        // Penalización por respuesta incorrecta
-        if (gameConfig.players[gameConfig.currentPlayer].score > 0) {
-            pointsForRound = -50;
-            gameConfig.players[gameConfig.currentPlayer].score += pointsForRound;
+        // Aplicar penalización solo si hay puntos que quitar
+        if (points < 0 && gameConfig.players[gameConfig.currentPlayer].score > 0) {
+            gameConfig.players[gameConfig.currentPlayer].score += points;
         }
 
+        let resultHTML = `<p>${message}</p>`;
         if (data && data.exists) {
-            resultLyric.innerHTML = `
+            resultHTML = `
                 <span class="titleSong">${data.title}</span>
                 <span class="artistSong">${data.artist}</span>
                 <p>${message}</p>
-                <div class="points-earned">${pointsForRound}<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></div>
-            `;
-        } else {
-            resultLyric.innerHTML = `
-                <p>${message}</p>
-                <div class="points-earned">${pointsForRound}<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></div>
             `;
         }
+
+        resultLyric.innerHTML = `
+            ${resultHTML}
+            <div class="points-earned">${points < 0 ? points : '+0'}<img src="svg/points.svg" alt="puntos" class="svg-points-round"/></div>
+            <div class="time-bonus">Tiempo restante: ${timeLeft}s</div>
+        `;
     }
 
     resultLyric.style.display = 'flex';
     updateScores();
 }
+
 
 // Función para inicializar el modo lírico
 function initializeLyricMode() {
@@ -2068,4 +2080,61 @@ function resetGame() {
     document.getElementById("finalBtn").style.display = "none";
     gameConfig.players.player1.correctAnswers = 0;
     gameConfig.players.player2.correctAnswers = 0;
+}
+function startLyricTimer() {
+    const timer = document.getElementById("timer");
+    timeLeft = 25;
+    timer.textContent = timeLeft;
+
+    // Habilitar la entrada y el botón al inicio del temporizador
+    lyricsInput.disabled = false;
+    checkButtonLyric.disabled = false;
+
+    setTimeout(() => {
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timer.textContent = timeLeft;
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                // Deshabilitar la entrada y el botón cuando se acaba el tiempo
+                lyricsInput.disabled = true;
+                checkButtonLyric.disabled = true;
+                handleLyricTimeout();
+            }
+        }, 1000);
+    }, 1500);
+}
+function handleLyricTimeout() {
+    showResultLyric('¡Se acabó el tiempo!', false);
+    endRound(false);
+}
+
+function calculateLyricPoints(isCorrect, wordsCount) {
+    let points = 0;
+    
+    if (isCorrect) {
+        // Puntos base por respuesta correcta
+        points += 300;
+        
+        // Bonus por tiempo restante
+        if (timeLeft > 20) {
+            points += 200;
+        } else if (timeLeft > 10) {
+            points += 150;
+        } else if (timeLeft > 5) {
+            points += 100;
+        } else if (timeLeft > 0) {
+            points += 50;
+        }
+        
+        // Bonus por longitud de la letra (máximo 200 puntos adicionales)
+        const wordBonus = Math.min(200, wordsCount * 5);
+        points += wordBonus;
+    } else {
+        // Penalización por respuesta incorrecta
+        points = -50;
+    }
+    
+    return points;
 }
